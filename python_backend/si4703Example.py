@@ -7,14 +7,15 @@ import zmq
 
 def main():
     context = zmq.Context()
-    socket = context.socket(zmq.REP)
+    socket = context.socket(zmq.PAIR)
     socket.bind("tcp://*:5555")
+
     # device ID is typically 0x10 - confirm with "sudo i2cdetect 1"
     radio = si4703Radio(0x10, 5, 19)
     radio.si4703Init()
-    radio.si4703SetChannel(987)
+    radio.si4703SetChannel(1003)
     radio.si4703SetVolume(5)
-    print(str(3))
+    #print(str(3))
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
 
@@ -22,32 +23,34 @@ def main():
         while True:
             #check for stuff
             #kbInput = input(">>")
-            message = socket.recv()
+            message = socket.recv_string()
             print("received request: %s" % message)
 
-            if kbInput == "1":
+            if message == "1":
                 radio.si4703SeekDown()
-                print(str(radio.si4703GetChannel()))
-            if kbInput == "2":
+                socket.send_string(str(radio.si4703GetChannel()))
+            if message == "2":
                 radio.si4703SeekUp()
-                print(str(radio.si4703GetChannel()))
-            if kbInput == "3":
-                radio.si4703SetChannel(987)
-                print(str(radio.si4703GetChannel()))
-            if kbInput == "+":
+                socket.send_string(str(radio.si4703GetChannel()))
+            if message == "3":
+                radio.si4703SetChannel(1003)
+                socket.send_string(str(radio.si4703GetChannel()))
+            if message == "+":
                 radio.si4703SetVolume(radio.si4703GetVolume()+1)
-                print(str(radio.si4703GetVolume()))
-            if kbInput == "-":
+                socket.send_string(str(radio.si4703GetVolume()))
+            if message == "-":
                 radio.si4703SetVolume(radio.si4703GetVolume()-1)
-                print(str(radio.si4703GetVolume()))
-            if kbInput == "r":
-                pass
+                socket.send_string(str(radio.si4703GetVolume()))
+            if message == "r":
+                break
             
     except KeyboardInterrupt:
-        print("Exiting program")
+        socket.send_string("Exiting program")
         
-    print("Shutting down radio")
+    socket.send_string("Shutting down radio")
+    #socket.send_string("test") 
     radio.si4703ShutDown()
+    socket.send_string("Radio has been turned off")
     
 if __name__ == "__main__":
     main()
