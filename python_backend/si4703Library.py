@@ -128,10 +128,14 @@ class si4703Radio():
     def si4703Seek(self,seekDirection):
         self.si4703ReadRegisters()
         # Set seek mode wrap bit
-        self.si4703_registers[self.SI4703_POWERCFG] |= (1<<self.SI4703_SKMODE) # Allow wrap
-        if(seekDirection == self.SI4703_SEEK_DOWN): self.si4703_registers[self.SI4703_POWERCFG] &= ~(1<<self.SI4703_SEEK) # Seek down is the default upon reset
-        else: self.si4703_registers[self.SI4703_POWERCFG] |= 1<<self.SI4703_SEEK #Set the bit to seek up
-        self.si4703_registers[self.SI4703_POWERCFG] |= (1<<self.SI4703_SEEK) #Start seek
+        self.si4703_registers[self.SI4703_POWERCFG] |= (1 << self.SI4703_SKMODE) # Allow wrap
+        if(seekDirection == self.SI4703_SEEK_DOWN):
+            print("down")
+            self.si4703_registers[self.SI4703_POWERCFG] &= ~(1 << self.SI4703_SEEKUP) # Seek down is the default upon reset
+        else:
+            print("up")
+            self.si4703_registers[self.SI4703_POWERCFG] |= 1 << self.SI4703_SEEKUP #Set the bit to seek up
+        self.si4703_registers[self.SI4703_POWERCFG] |= (1 << self.SI4703_SEEK) #Start seek
         self.si4703WriteRegisters() #Seeking will now start
         
         if (self.si4703UseIRQ == True):
