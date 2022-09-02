@@ -43,6 +43,9 @@ def main():
             if message == "-":
                 radio.si4703SetVolume(radio.si4703GetVolume()-1)
                 socket.send_string(str(radio.si4703GetVolume()))
+            if message == "d":
+                radio.si4703ProcessRDS()
+                socket.send_string(str(radio.si4703GetVolume()))
             if message == "t":
                 print("connected to Iphone")
             if message == "r":

@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 
 # SI4703 Python Library
-# (c) 2016 Ryan Edwards <ryan.edwards@gmail.com> 
-# Ported from my Arduino library which was modified from Aaron Weiss @ SparkFun's original library
-#
-# Release Notes:
-# 1.0    27-Mar-2016        Initial release
-#
-# To-do:
-# Implement the remaining RDS data groups
-# Add more try/execpt handling to catch errors
 # 
 
 import smbus
