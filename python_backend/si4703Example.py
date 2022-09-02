@@ -2,22 +2,24 @@
 
 #example program for testing the si4703 library
 from si4703Library import si4703Radio
-import time
 import zmq
 
 def main():
     context = zmq.Context()
     socket = context.socket(zmq.PAIR)
-    socket.bind("tcp://*:5555")
+    socket.bind("tcp://*:5556")
 
     # device ID is typically 0x10 - confirm with "sudo i2cdetect 1"
     radio = si4703Radio(0x10, 5, 19)
     radio.si4703Init()
     radio.si4703SetChannel(1003)
     radio.si4703SetVolume(5)
-    #print(str(3))
-    print(str(radio.si4703GetChannel()))
-    print(str(radio.si4703GetVolume()))
+    chn = str(radio.si4703GetChannel())
+    print(chn)
+    #socket.send_string(chn)
+    vol = str(radio.si4703GetVolume())
+    print(vol)
+    #socket.send_string(vol)
 
     try:
         while True:
@@ -41,6 +43,8 @@ def main():
             if message == "-":
                 radio.si4703SetVolume(radio.si4703GetVolume()-1)
                 socket.send_string(str(radio.si4703GetVolume()))
+            if message == "t":
+                print("connected to Iphone")
             if message == "r":
                 break
             
