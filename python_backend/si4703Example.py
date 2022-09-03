@@ -14,17 +14,12 @@ def main():
     radio.si4703Init()
     radio.si4703SetChannel(1003)
     radio.si4703SetVolume(5)
-    chn = str(radio.si4703GetChannel())
-    print(chn)
-    #socket.send_string(chn)
-    vol = str(radio.si4703GetVolume())
-    print(vol)
-    #socket.send_string(vol)
+    print(str(radio.si4703GetChannel()))
+    print(str(radio.si4703GetVolume()))
 
     try:
         while True:
             #check for stuff
-            #kbInput = input(">>")
             message = socket.recv_string()
             print("received request: %s" % message)
 
@@ -44,8 +39,10 @@ def main():
                 radio.si4703SetVolume(radio.si4703GetVolume()-1)
                 socket.send_string(str(radio.si4703GetVolume()))
             if message == "d":
-                radio.si4703ProcessRDS()
-                socket.send_string(str(radio.si4703GetVolume()))
+                radio.si4703ClearRDSBuffers()
+                test = radio.si4703ProcessRDS()
+                print(test)
+                socket.send_string(str(test))
             if message == "t":
                 print("connected to Iphone")
             if message == "r":
@@ -55,7 +52,6 @@ def main():
         socket.send_string("Exiting program")
         
     socket.send_string("Shutting down radio")
-    #socket.send_string("test") 
     radio.si4703ShutDown()
     socket.send_string("Radio has been turned off")
     

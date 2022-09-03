@@ -4,8 +4,9 @@
 # 
 
 import smbus
-import time
+from time import time
 import RPi.GPIO as GPIO
+import array as buffer
 
 class si4703Radio():
 
@@ -189,7 +190,7 @@ class si4703Radio():
 
     def si4703ProcessRDS(self):    
         self.si4703ReadRegisters()
-        if(self.si4703_registers[self.SI4703_STATUSRSSI] & (1<<self.SI4703_RDSR)):
+        if(self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR)):
             #read group type
             groupType = self.si4703_registers[self.SI4703_RDSB] >> self.SI4703_GROUPTYPE_OFFST
 
@@ -302,3 +303,41 @@ class si4703Radio():
             regIndex += 1
             if regIndex == 0x10:
                 regIndex = 0
+
+    def readRDS(self):
+        milli = int(time() * 1000)
+        endTime = milli + 15000
+        completed = [False, False, False, False]
+        completedCount = 0
+        rds_buffer = buffer.array('u')
+        while((completedCount < 4) and (milli < endTime)):
+            self.si4703ReadRegisters()
+            if(self.si4703_registers[self.STATUSRSSI] & (1 << self.SI4703_RDSR)):
+                # ls 2 bits of B determine the 4 letter pairs
+                # once we have a full set return
+                # if you get nothing after 20 readings return with empty string
+                b = self.si4703_registers[self.SI4703_RDSB]
+                index = b & 0x03
+                if (not completed[index] and b < 500):
+                    completed[index] = True
+                    completedCount += 1
+                    Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
+                    Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
+                    rds_buffer[index * 2] = Dh
+                    rds_buffer[index * 2 + 1] = Dl
+                    print(self.si4703_registers[self.SI4703_RDSD])
+                    print(index)
+                    print(Dh)
+                    print(Dl)
+
+                time.sleep(.04) #Wait for the RDS bit to clear
+
+            else:
+                time.sleep(.03) #From AN230, using the polling method 40ms should be sufficient amount of time between checks
+
+            if (milli >= endTime):
+                rds_buffer[0] ='\0'
+                return
+
+        rds_buffer[8] = '\0'
+        return rds_buffer
