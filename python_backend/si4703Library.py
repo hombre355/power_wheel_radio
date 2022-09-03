@@ -4,7 +4,7 @@
 # 
 
 import smbus
-from time import time
+import time
 import RPi.GPIO as GPIO
 import array as buffer
 
