@@ -40,7 +40,7 @@ def main():
                 socket.send_string(str(radio.si4703GetVolume()))
             if message == "d":
                 radio.si4703ClearRDSBuffers()
-                test = radio.si4703ProcessRDS()
+                test = radio.si4703ReadRDS
                 print(test)
                 socket.send_string(str(test))
             if message == "t":

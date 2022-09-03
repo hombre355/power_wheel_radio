@@ -304,7 +304,7 @@ class si4703Radio():
             if regIndex == 0x10:
                 regIndex = 0
 
-    def readRDS(self):
+    def si4703ReadRDS(self):
         milli = int(time() * 1000)
         endTime = milli + 15000
         completed = [False, False, False, False]
