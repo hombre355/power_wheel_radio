@@ -341,9 +341,11 @@ class si4703Radio():
                     self.si4703_rds_rt[(offset * 2) + 1] = Dh
 
                 for x in self.si4703_rds_ps:
+                    print(x)
                     station_name += chr(self.si4703_rds_ps[x])
 
                 for x in self.si4703_rds_rt:
+                    print(x)
                     song_name += chr(self.si4703_rds_rt[x])
 
                 print("station name = ", station_name)
