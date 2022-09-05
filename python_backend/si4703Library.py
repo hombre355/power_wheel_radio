@@ -283,11 +283,11 @@ class si4703Radio():
                 blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD))
 
                 print("status rssi", bin(self.si4703_registers[self.SI4703_STATUSRSSI]))
-                print("a", format(blera, '2b'))
+                print("a", hex(blera))
                 print("readchan", format(self.si4703_registers[self.SI4703_READCHAN], '#016b'))
-                print("b", format(blerb, '2b'))
-                print("c", format(blerc, '2b'))
-                print("d", format(blerd, '2b'))
+                print("b", hex(blerb))
+                print("c", hex(blerc))
+                print("d", hex(blerd))
 
                 if group_type != 0 and group_type != 2:
                     continue
