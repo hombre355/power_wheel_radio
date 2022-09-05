@@ -202,7 +202,8 @@ class si4703Radio():
     def si4703GetChannel(self):
         self.si4703ReadRegisters()
         # Mask out everything but the lower 10 bits
-        return (self.si4703_registers[self.SI4703_READCHAN] & self.SI4703_READCHAN_MASK) + 875
+        channel = (self.si4703_registers[self.SI4703_READCHAN] & self.SI4703_READCHAN_MASK) * 2
+        return channel + 875
 
     def si4703SetMute(self):
         print("Mute Toggle")
