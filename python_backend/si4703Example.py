@@ -17,6 +17,7 @@ def main():
     radio.si4703SetVolume(15)
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
+    print("ready for commands")
 
     try:
         while True:
