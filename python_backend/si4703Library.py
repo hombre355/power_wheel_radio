@@ -152,13 +152,13 @@ class si4703Radio():
         # newChannel = channel * 10  # e.g. 973 * 10 = 9730
         # newChannel -= 8750  # e.g. 9730 - 8750 = 980
         # newChannel /= 10  # e.g. 980 / 10 = 98
-        print(channel)
-        new_Channel = channel - 875  # 1035 - 875 = 160
-        print(new_Channel)  # 160
-        new_Channel /= .2   # 160 / .2 = 800
-        print(new_Channel)  # 800
-        new_Channel /= 10   # 800 / 10 = 80
-        print(new_Channel)  # 80
+        print(channel)  # 1035
+        new_Channel = channel - 875  # 1003 - 875 = 128
+        print(new_Channel)  # 128
+        #  new_Channel /= .1   # 128 / .1 = 1280
+        #  print(new_Channel)  # 1280
+        #  new_Channel /= 10   # 800 / 10 = 80
+        #  print(new_Channel)  # 80
 
         # These steps come from AN230 page 20 rev 0.9
         self.si4703ReadRegisters()

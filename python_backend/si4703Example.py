@@ -12,7 +12,7 @@ def main():
     # device ID is typically 0x10 - confirm with "sudo i2cdetect 1"
     radio = si4703Radio(0x10, 5, 19)
     radio.si4703Init()
-    radio.si4703SetChannel(1035)
+    radio.si4703SetChannel(1003)
     radio.si4703SetVolume(5)
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
