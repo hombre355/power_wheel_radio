@@ -153,7 +153,7 @@ class si4703Radio():
         #newChannel -= 8750  # e.g. 9730 - 8750 = 980
         #newChannel /= 10  # e.g. 980 / 10 = 98
 
-        new_Channel = (channel - 87.5) / .2
+        new_Channel = ((channel - 875) / .2) / .1
 
         # These steps come from AN230 page 20 rev 0.9
         self.si4703ReadRegisters()
