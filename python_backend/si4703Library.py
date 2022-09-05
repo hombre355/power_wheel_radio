@@ -277,14 +277,14 @@ class si4703Radio():
                 Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
-                blera = (self.si4703_registers[self.SI4703_STATUSRSSI] & (3 << self.SI4703_BLERA)) >> 2
-                blerb = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERB)) >> 2
-                blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC)) >> 2
-                blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD)) >> 2
+                blera = (self.si4703_registers[self.SI4703_STATUSRSSI] & (3 << self.SI4703_BLERA)) >> 7
+                blerb = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERB)) >> 12
+                blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC)) >> 10
+                blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD)) >> 8
 
                 print("status rssi", bin(self.si4703_registers[self.SI4703_STATUSRSSI]))
-                print("a", blera)
-                print("readchan", bin(self.si4703_registers[self.SI4703_READCHAN]))
+                print("a", bin(blera))
+                print("readchan", format(self.si4703_registers[self.SI4703_READCHAN], '08b'))
                 print("b", bin(blerb))
                 print("c", bin(blerc))
                 print("d", bin(blerd))
