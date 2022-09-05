@@ -384,10 +384,14 @@ class si4703Radio():
                     self.si4703_rds_rt[(offset * 2)] = Dh
                     self.si4703_rds_rt[(offset * 2) + 1] = Dl
 
+                print(len(self.si4703_rds_ps))
                 for x in self.si4703_rds_ps:
+                    print("x =", chr(x))
                     station_name += chr(x)
 
+                print(len(self.si4703_rds_ps))
                 for y in self.si4703_rds_rt:
+                    print("y =", chr(y))
                     song_name += chr(y)
 
                 #station_name.join(chr(x) for x in self.si4703_rds_ps)
