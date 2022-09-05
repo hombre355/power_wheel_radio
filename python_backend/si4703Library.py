@@ -248,8 +248,11 @@ class si4703Radio():
         print(" of 75)")
 
     def si4703GetRDSData(self):
-        count = 0
+        #count = 0
         while 1:
+            offset = 0
+            station_name = ""
+            song_name = ""
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
                 print("We have RDS!")
@@ -283,29 +286,61 @@ class si4703Radio():
                     continue
                 print("traffic program code = ", traffic_program_code)
                 print("pty = ", self.pty[program_type_code])
-                if group_type == 0:
+                if group_type == 0 and version_code == 0:
                     print("traf ann = ", traffic_ann)
                     print("m and s = ", music_speech)
                     print("decode iden= ", decode_iden)
                     print("c1 = ", c1)
                     print("c0 = ", c0)
+                    if c0 == 1:
+                        offset += 1
+                    if c1 == 1:
+                        offset += 2
+                    self.si4703_rds_ps[(offset * 2)] = Dl
+                    self.si4703_rds_ps[(offset * 2) + 1] = Dh
                 elif group_type == 2 and version_code == 0:
                     print("a and b = ", traffic_ann)
                     print("c3 = ", music_speech)
                     print("c2 = ", decode_iden)
                     print("c1 = ", c1)
                     print("c0 = ", c0)
+                    if c0 == 1:
+                        offset += 1
+                    if c1 == 1:
+                        offset += 2
+                    if decode_iden == 1:
+                        offset += 4
+                    if music_speech == 1:
+                        offset += 8
+                    self.si4703_rds_rt[(offset * 4)] = Cl
+                    self.si4703_rds_rt[(offset * 4) + 1] = Ch
+                    self.si4703_rds_rt[(offset * 4) + 2] = Dl
+                    self.si4703_rds_rt[(offset * 4) + 3] = Dh
                 elif group_type == 2 and version_code == 1:
                     print("a and b = ", traffic_ann)
                     print("c3 = ", music_speech)
                     print("c2 = ", decode_iden)
                     print("c1 = ", c1)
                     print("c0 = ", c0)
+                    if c0 == 1:
+                        offset += 1
+                    if c1 == 1:
+                        offset += 2
+                    if decode_iden == 1:
+                        offset += 4
+                    if music_speech == 1:
+                        offset += 8
+                    self.si4703_rds_rt[(offset * 2)] = Dl
+                    self.si4703_rds_rt[(offset * 2) + 1] = Dh
 
-                print("Ch = ", hex(Ch))
-                print("Cl = ", hex(Cl))
-                print("Dh = ", hex(Dh))
-                print("Dl = ", hex(Dl))
+                for x in self.si4703_rds_ps:
+                    station_name += self.si4703_rds_ps[x]
+
+                for x in self.si4703_rds_rt:
+                    song_name += self.si4703_rds_rt[x]
+
+                print("station name = ", station_name)
+                print("song name = ", song_name)
                 print("rds done")
 
                 time.sleep(.040)  # Wait for the RDS bit to clear
@@ -314,10 +349,10 @@ class si4703Radio():
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
                 time.sleep(.040)
 
-            if count > 20:
-                break
+            #if count > 20:
+                #break
 
-            count += 1
+            #count += 1
 
 
 

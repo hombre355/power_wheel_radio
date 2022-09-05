@@ -3,6 +3,7 @@
 # example program for testing the si4703 library
 from si4703Library import si4703Radio
 import zmq
+import threading
 
 def main():
     context = zmq.Context()
@@ -17,7 +18,10 @@ def main():
     radio.si4703SetVolume(15)
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
+    thread = threading.Thread(target=radio.si4703GetRDSData)
+    thread.start()
     print("ready for commands")
+
 
     try:
         while True:
