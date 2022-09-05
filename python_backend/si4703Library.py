@@ -299,8 +299,8 @@ class si4703Radio():
                         offset += 2
                     #print(offset)
                     #print(len(self.si4703_rds_ps))
-                    self.si4703_rds_ps[(offset * 2)] = Dl
-                    self.si4703_rds_ps[(offset * 2) + 1] = Dh
+                    self.si4703_rds_ps[(offset * 2)] = Dh
+                    self.si4703_rds_ps[(offset * 2) + 1] = Dl
                 elif group_type == 2 and version_code == 0:
                     #print("a and b = ", traffic_ann)
                     print("c3 = ", music_speech)
@@ -317,10 +317,10 @@ class si4703Radio():
                         offset += 8
                     #print(offset)
                     #print(len(self.si4703_rds_rt))
-                    self.si4703_rds_rt[(offset * 4)] = Cl
-                    self.si4703_rds_rt[(offset * 4) + 1] = Ch
-                    self.si4703_rds_rt[(offset * 4) + 2] = Dl
-                    self.si4703_rds_rt[(offset * 4) + 3] = Dh
+                    self.si4703_rds_rt[(offset * 4)] = Ch
+                    self.si4703_rds_rt[(offset * 4) + 1] = Cl
+                    self.si4703_rds_rt[(offset * 4) + 2] = Dh
+                    self.si4703_rds_rt[(offset * 4) + 3] = Dl
                 elif group_type == 2 and version_code == 1:
                     #print("a and b = ", traffic_ann)
                     print("c3 = ", music_speech)
@@ -337,8 +337,8 @@ class si4703Radio():
                         offset += 8
                     #print(offset)
                     #print(len(self.si4703_rds_rt))
-                    self.si4703_rds_rt[(offset * 2)] = Dl
-                    self.si4703_rds_rt[(offset * 2) + 1] = Dh
+                    self.si4703_rds_rt[(offset * 2)] = Dh
+                    self.si4703_rds_rt[(offset * 2) + 1] = Dl
 
                 for x in range(len(self.si4703_rds_ps)):
                     #print("x = ", x)
@@ -351,12 +351,13 @@ class si4703Radio():
                 print("station name = ", station_name)
                 print("song name = ", song_name)
                 print("rds done")
+                print(" ")
 
-                time.sleep(.040)  # Wait for the RDS bit to clear
+                time.sleep(.010)  # Wait for the RDS bit to clear
             else:
                 print("No RDS")
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
-                time.sleep(.040)
+                time.sleep(.010)
 
             #if count > 20:
                 #break
