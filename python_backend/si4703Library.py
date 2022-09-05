@@ -155,10 +155,10 @@ class si4703Radio():
         print(channel)  # 1035
         new_Channel = channel - 875  # 1003 - 875 = 128
         print(new_Channel)  # 128
-        #  new_Channel /= .1   # 128 / .1 = 1280
-        #  print(new_Channel)  # 1280
-        #  new_Channel /= 10   # 800 / 10 = 80
-        #  print(new_Channel)  # 80
+        new_Channel /= .2   # 128 / .2 = 640
+        print(new_Channel)  # 640
+        new_Channel /= 10   # 640 / 10 = 64
+        print(new_Channel)  # 64
 
 
         # These steps come from AN230 page 20 rev 0.9
@@ -312,8 +312,8 @@ class si4703Radio():
         self.si4703_registers[self.SI4703_POWERCFG] = 0x4001  # Enable the IC
 
         self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_RDS)  # Enable RDS
-        self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_DE)  # 50kHz Europe setup
-        #  self.si4703_registers[self.SI4703_SYSCONFIG1] &= ~(1 << self.SI4703_DE)  # 75kHz USA setup
+        #  self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_DE)  # 50kHz Europe setup
+        self.si4703_registers[self.SI4703_SYSCONFIG1] &= ~(1 << self.SI4703_DE)  # 75kHz USA setup
         self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_GPIO2)  # Turn GPIO2 into interrupt output
         if self.si4703UseIRQ:
             # enable the si4703 IRQ pin for reading the STC flag
@@ -324,9 +324,9 @@ class si4703Radio():
         # setting per recommended AN230 page 40
         self.si4703_registers[self.SI4703_SYSCONFIG2] |= (0x19 << self.SI4703_SEEKTH)
         # 100kHz channel spacing for *Europe!!*
-        self.si4703_registers[self.SI4703_SYSCONFIG2] |= (1 << self.SI4703_SPACE0)
+        #  self.si4703_registers[self.SI4703_SYSCONFIG2] |= (1 << self.SI4703_SPACE0)
         # 200kHz channel spacing for *USA!!*
-        #  self.si4703_registers[self.SI4703_SYSCONFIG2] &= ~(1 << self.SI4703_SPACE0)
+        self.si4703_registers[self.SI4703_SYSCONFIG2] &= ~(1 << self.SI4703_SPACE0)
         self.si4703_registers[self.SI4703_SYSCONFIG2] &= 0xFFF0  # Clear volume bits
         self.si4703_registers[self.SI4703_SYSCONFIG2] |= 0x0001  # Set volume to lowest
 
