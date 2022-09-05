@@ -255,7 +255,7 @@ class si4703Radio():
                 print("We have RDS!")
                 pi_code = self.si4703_registers[self.SI4703_RDSA]
 
-                group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 4
+                group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 12
                 version_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0800) >> 1
                 traffic_program_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0400) >> 1
                 program_type_code = (self.si4703_registers[self.SI4703_RDSB] & 0x03E0) >> 5
