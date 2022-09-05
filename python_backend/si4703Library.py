@@ -287,7 +287,7 @@ class si4703Radio():
 
                 print("status rssi", bin(self.si4703_registers[self.SI4703_STATUSRSSI]))
                 print("a", hex(blera))
-                print("readchan", format(self.si4703_registers[self.SI4703_READCHAN], '#020b'))
+                print("readchan", format(self.si4703_registers[self.SI4703_READCHAN], '#018b'))
                 print("b", hex(blerb))
                 print("b2", hex(blerb2))
                 print("c", hex(blerc))
