@@ -273,7 +273,7 @@ class si4703Radio():
 
                 print("RDS: ")
                 print(hex(pi_code))
-                print(group_type, "in binary = ", bin(group_type))
+                print("group_type = ", group_type, "in binary = ", bin(group_type))
                 if version_code:
                     print("B")
                 else:
@@ -288,7 +288,7 @@ class si4703Radio():
                     print("m and s = ", music_speech)
                     print("decode iden= ", decode_iden)
                     print("c1 = ", c1)
-                    print("c2 = ", c0)
+                    print("c0 = ", c0)
                 elif group_type == 2 and version_code == 0:
                     print("a and b = ", traffic_ann)
                     print("c3 = ", music_speech)
@@ -314,7 +314,7 @@ class si4703Radio():
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
                 time.sleep(.040)
 
-            if count > 10:
+            if count > 20:
                 break
 
             count += 1
