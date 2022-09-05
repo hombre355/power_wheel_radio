@@ -290,21 +290,29 @@ class si4703Radio():
                 print("d", hex(blerd))
 
                 if group_type != 0 and group_type != 2:
+                    print("group", group_type)
+                    continue
+
+                if blerb != 0:
+                    print("blrb", blerb)
                     continue
 
                 print("RDS: ")
                 #print(hex(pi_code))
-                print("group_type = ", group_type)  #  , "in binary = ", bin(group_type))
+                print("group_type = ", group_type)
                 if version_code:
                     print("B")
                 else:
                     print("A")
                 #print("version code = ", version_code)
-                if group_type != 0 and group_type != 2:
-                    continue
+                #if group_type != 0 and group_type != 2:
+                    #continue
                 #print("traffic program code = ", traffic_program_code)
                 #print("pty = ", self.pty[program_type_code])
                 if group_type == 0 and version_code == 0:
+                    if blerd != 0:
+                        print("blrd", blerd)
+                        continue
                     #print("traf ann = ", traffic_ann)
                     #print("m and s = ", music_speech)
                     #print("decode iden= ", decode_iden)
@@ -315,11 +323,14 @@ class si4703Radio():
                     if c1 == 1:
                         offset += 2
                     print("offset =", offset)
-                    #print(len(self.si4703_rds_ps))
                     self.si4703_rds_ps[(offset * 2)] = Dh
                     self.si4703_rds_ps[(offset * 2) + 1] = Dl
 
                 elif group_type == 2 and version_code == 0:
+                    if blerc != 0:
+                        print("blrc", blerc)
+                        continue
+
                     #print("a and b = ", traffic_ann)
                     #print("c3 = ", music_speech)
                     #print("c2 = ", decode_iden)
@@ -337,10 +348,18 @@ class si4703Radio():
                     #print(len(self.si4703_rds_rt))
                     self.si4703_rds_rt[(offset * 4)] = Ch
                     self.si4703_rds_rt[(offset * 4) + 1] = Cl
+
+                    if blerd != 0:
+                        print("blrd", blerd)
+                        continue
+
                     self.si4703_rds_rt[(offset * 4) + 2] = Dh
                     self.si4703_rds_rt[(offset * 4) + 3] = Dl
 
                 elif group_type == 2 and version_code == 1:
+                    if blerd != 0:
+                        print("blrd", blerd)
+                        continue
                     #print("a and b = ", traffic_ann)
                     #print("c3 = ", music_speech)
                     #print("c2 = ", decode_iden)
