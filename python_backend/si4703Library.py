@@ -301,14 +301,26 @@ class si4703Radio():
                         offset += 1
                     if c1 == 1:
                         offset += 2
+                    if decode_iden == 1:
+                        offset += 4
+                    if music_speech == 1:
+                        offset += 8
                     print("offset =", offset)
-                    if blerd != 0:
+                    if blerc != 0:
                         self.si4703_rds_ps[(offset * 2)] = 0x20
                         self.si4703_rds_ps[(offset * 2) + 1] = 0x20
                         continue
 
-                    self.si4703_rds_ps[(offset * 2)] = Dh
-                    self.si4703_rds_ps[(offset * 2) + 1] = Dl
+                    self.si4703_rds_ps[(offset * 2)] = Ch
+                    self.si4703_rds_ps[(offset * 2) + 1] = Cl
+
+                    if blerd != 0:
+                        self.si4703_rds_ps[(offset * 2) + 2] = 0x20
+                        self.si4703_rds_ps[(offset * 2) + 3] = 0x20
+                        continue
+
+                    self.si4703_rds_ps[(offset * 2) + 2] = Dh
+                    self.si4703_rds_ps[(offset * 2) + 3] = Dl
 
                 elif group_type == 2 and version_code == 0:
                     if c0 == 1:
@@ -326,10 +338,16 @@ class si4703Radio():
                         self.si4703_rds_rt[(offset * 4) + 1] = 0x20
                         continue
 
+                    self.si4703_rds_rt[(offset * 4)] = Ch
+                    self.si4703_rds_rt[(offset * 4) + 1] = Cl
+
                     if blerd != 0:
                         self.si4703_rds_rt[(offset * 4) + 2] = 0x20
                         self.si4703_rds_rt[(offset * 4) + 3] = 0x20
                         continue
+
+                    self.si4703_rds_rt[(offset * 4) + 2] = Dh
+                    self.si4703_rds_rt[(offset * 4) + 3] = Dl
 
                 elif group_type == 2 and version_code == 1:
                     if c0 == 1:
