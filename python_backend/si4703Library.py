@@ -115,6 +115,7 @@ class si4703Radio():
         self.si4703_registers = [0] * 16
         self.si4703_rds_ps = [0] * 8
         self.si4703_rds_rt = [0] * 64
+        self.si4703ClearRDSBuffers()
 
         if self.irqPIN == -1:
             self.si4703UseIRQ = False
