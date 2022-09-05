@@ -69,6 +69,7 @@ class si4703Radio():
     SI4703_SFBL = 13
     SI4703_AFCRL = 12
     SI4703_RDSS = 11
+    SI4703_BLERA = 9
     SI4703_STEREO = 8
 
     # Register 0x0B - READCHAN
@@ -275,6 +276,18 @@ class si4703Radio():
                 Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
+                blera = (self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_BLERA)) >> 2
+                blerb = (self.si4703_registers[self.SI4703_READCHAN] & (1 << self.SI4703_BLERB)) >> 2
+                blerc = (self.si4703_registers[self.SI4703_READCHAN] & (1 << self.SI4703_BLERC)) >> 2
+                blerd = (self.si4703_registers[self.SI4703_READCHAN] & (1 << self.SI4703_BLERD)) >> 2
+
+                print("status rssi = ", bin(self.si4703_registers[self.SI4703_STATUSRSSI]))
+                print(blera)
+                print("readchan =", bin(self.si4703_registers[self.SI4703_READCHAN]))
+                print(bin(blerb))
+                print(bin(blerc))
+                print(bin(blerd))
+
                 if group_type != 0 and group_type != 2:
                     continue
 
@@ -340,7 +353,7 @@ class si4703Radio():
                         offset += 4
                     if music_speech == 1:
                         offset += 8
-                    print("offset =",offset)
+                    print("offset =", offset)
                     #print(len(self.si4703_rds_rt))
                     self.si4703_rds_rt[(offset * 2)] = Dh
                     self.si4703_rds_rt[(offset * 2) + 1] = Dl
@@ -406,6 +419,7 @@ class si4703Radio():
 
         self.si4703ReadRegisters()  # Read the current register set
         self.si4703_registers[self.SI4703_POWERCFG] = 0x4001  # Enable the IC
+        self.si4703_registers[self.SI4703_POWERCFG] |= (1 << self.SI4703_RDSM)  # Enable RDS Verbose
 
         self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_RDS)  # Enable RDS
         #  self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_DE)  # 50kHz Europe setup
