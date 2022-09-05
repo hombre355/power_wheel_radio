@@ -277,7 +277,7 @@ class si4703Radio():
                 Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
-                blera = (self.si4703_registers[self.SI4703_STATUSRSSI] & (3 << self.SI4703_BLERA)) >> 9
+                #blera = (self.si4703_registers[self.SI4703_STATUSRSSI] & (3 << self.SI4703_BLERA)) >> 9
                 blerb = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERB)) >> 14
                 blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC)) >> 12
                 blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD)) >> 10
@@ -312,10 +312,10 @@ class si4703Radio():
                 #print("traffic program code = ", traffic_program_code)
                 #print("pty = ", self.pty[program_type_code])
                 if group_type == 0 and version_code == 0:
-                    if blerd != 0:
-                        print("blrd", blerd)
-                        print(" ")
-                        continue
+                    #if blerd != 0:
+                    #    print("blrd", blerd)
+                    #    print(" ")
+                    #    continue
                     #print("traf ann = ", traffic_ann)
                     #print("m and s = ", music_speech)
                     #print("decode iden= ", decode_iden)
@@ -326,14 +326,16 @@ class si4703Radio():
                     if c1 == 1:
                         offset += 2
                     print("offset =", offset)
+                    if blerd != 0:
+                        self.si4703_rds_ps[(offset * 2)] = "_"
+                        self.si4703_rds_ps[(offset * 2) + 1] = "_"
+                        continue
+
                     self.si4703_rds_ps[(offset * 2)] = Dh
                     self.si4703_rds_ps[(offset * 2) + 1] = Dl
 
                 elif group_type == 2 and version_code == 0:
-                    if blerc != 0:
-                        print("blrc", blerc)
-                        print(" ")
-                        continue
+
 
                     #print("a and b = ", traffic_ann)
                     #print("c3 = ", music_speech)
@@ -349,23 +351,19 @@ class si4703Radio():
                     if music_speech == 1:
                         offset += 8
                     print("offset =", offset)
-                    #print(len(self.si4703_rds_rt))
-                    self.si4703_rds_rt[(offset * 4)] = Ch
-                    self.si4703_rds_rt[(offset * 4) + 1] = Cl
 
-                    if blerd != 0:
-                        print("blrd", blerd)
-                        print(" ")
+                    if blerc != 0:
+                        self.si4703_rds_rt[(offset * 4)] = "_"
+                        self.si4703_rds_rt[(offset * 4) + 1] = "_"
                         continue
 
-                    self.si4703_rds_rt[(offset * 4) + 2] = Dh
-                    self.si4703_rds_rt[(offset * 4) + 3] = Dl
+                    if blerd != 0:
+                        self.si4703_rds_rt[(offset * 4) + 2] = "_"
+                        self.si4703_rds_rt[(offset * 4) + 3] = "_"
+                        continue
 
                 elif group_type == 2 and version_code == 1:
-                    if blerd != 0:
-                        print("blrd", blerd)
-                        print(" ")
-                        continue
+
                     #print("a and b = ", traffic_ann)
                     #print("c3 = ", music_speech)
                     #print("c2 = ", decode_iden)
@@ -380,18 +378,21 @@ class si4703Radio():
                     if music_speech == 1:
                         offset += 8
                     print("offset =", offset)
-                    #print(len(self.si4703_rds_rt))
+                    if blerd != 0:
+                        self.si4703_rds_rt[(offset * 2)] = "_"
+                        self.si4703_rds_rt[(offset * 2) + 1] = "_"
+                        continue
                     self.si4703_rds_rt[(offset * 2)] = Dh
                     self.si4703_rds_rt[(offset * 2) + 1] = Dl
 
-                print(len(self.si4703_rds_ps))
+                #print(len(self.si4703_rds_ps))
                 for x in self.si4703_rds_ps:
-                    print("x =", chr(x))
+                    #print("x =", chr(x))
                     station_name += chr(x)
 
-                print(len(self.si4703_rds_ps))
+                #print(len(self.si4703_rds_ps))
                 for y in self.si4703_rds_rt:
-                    print("y =", chr(y))
+                    #print("y =", chr(y))
                     song_name += chr(y)
 
                 #station_name.join(chr(x) for x in self.si4703_rds_ps)
