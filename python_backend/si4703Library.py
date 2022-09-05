@@ -153,13 +153,11 @@ class si4703Radio():
         #newChannel -= 8750  # e.g. 9730 - 8750 = 980
         #newChannel /= 10  # e.g. 980 / 10 = 98
 
-        new_Channel = (channel - 875) / .2
+        new_Channel = (channel - 87.5) / .2
 
         # These steps come from AN230 page 20 rev 0.9
         self.si4703ReadRegisters()
-        print(bytes(self.si4703_registers[self.SI4703_SYSCONFIG2] & 0x00F0))
         print(new_Channel)
-
         self.si4703_registers[self.SI4703_CHANNEL] &= 0xFE00  # Clear out the channel bits
         self.si4703_registers[self.SI4703_CHANNEL] |= int(new_Channel)  # Mask in the new channel
         self.si4703_registers[self.SI4703_CHANNEL] |= (1 << self.SI4703_TUNE)  # Set the TUNE bit to start
