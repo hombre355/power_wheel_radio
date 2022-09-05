@@ -278,11 +278,11 @@ class si4703Radio():
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
                 blera = (self.si4703_registers[self.SI4703_STATUSRSSI] & (3 << self.SI4703_BLERA)) >> 7
-                blerb = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERB))
+                blerb = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERB)) >> 14
                 blerb2 = (self.si4703_registers[self.SI4703_READCHAN] & 0xC000)
-                blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC))
+                blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC)) >> 12
                 blerc2 = (self.si4703_registers[self.SI4703_READCHAN] & 0x3000)
-                blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD))
+                blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD)) >> 10
                 blerd2 = (self.si4703_registers[self.SI4703_READCHAN] & 0x0C00)
 
                 print("status rssi", bin(self.si4703_registers[self.SI4703_STATUSRSSI]))
