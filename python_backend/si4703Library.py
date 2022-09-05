@@ -260,10 +260,10 @@ class si4703Radio():
                 traffic_program_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0400) >> 1
                 program_type_code = (self.si4703_registers[self.SI4703_RDSB] & 0x03E0) >> 5
                 traffic_ann = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
-                music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
-                decode_iden = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
-                c1 = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
-                c0 = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
+                music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0008) >> 1
+                decode_iden = (self.si4703_registers[self.SI4703_RDSB] & 0x0004) >> 1
+                c1 = (self.si4703_registers[self.SI4703_RDSB] & 0x0002) >> 1
+                c0 = (self.si4703_registers[self.SI4703_RDSB] & 0x0001) >> 1
 
                 Ch = (self.si4703_registers[self.SI4703_RDSC] & 0xFF00) >> 8
                 Cl = (self.si4703_registers[self.SI4703_RDSC] & 0x00FF)
@@ -273,7 +273,7 @@ class si4703Radio():
 
                 print("RDS: ")
                 print(hex(pi_code))
-                print(hex(group_type))
+                print(group_type)  # start here on why it is more then 4 bits
                 print(version_code)
                 print(traffic_program_code)
                 print(self.pty[program_type_code])
