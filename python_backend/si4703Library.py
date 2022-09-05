@@ -256,7 +256,7 @@ class si4703Radio():
             song_name = ""
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
-                print("We have RDS!")
+                #print("We have RDS!")
                 pi_code = self.si4703_registers[self.SI4703_RDSA]
 
                 group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 12
@@ -275,38 +275,41 @@ class si4703Radio():
                 Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
+                if group_type != 0 and group_type != 2:
+                    continue
+
                 print("RDS: ")
-                print(hex(pi_code))
-                print("group_type = ", group_type, "in binary = ", bin(group_type))
+                #print(hex(pi_code))
+                print("group_type = ", group_type)  #  , "in binary = ", bin(group_type))
                 if version_code:
                     print("B")
                 else:
                     print("A")
-                print("version code = ", version_code)
+                #print("version code = ", version_code)
                 if group_type != 0 and group_type != 2:
                     continue
-                print("traffic program code = ", traffic_program_code)
-                print("pty = ", self.pty[program_type_code])
+                #print("traffic program code = ", traffic_program_code)
+                #print("pty = ", self.pty[program_type_code])
                 if group_type == 0 and version_code == 0:
                     #print("traf ann = ", traffic_ann)
-                    print("m and s = ", music_speech)
-                    print("decode iden= ", decode_iden)
-                    print("c1 = ", c1)
-                    print("c0 = ", c0)
+                    #print("m and s = ", music_speech)
+                    #print("decode iden= ", decode_iden)
+                    #print("c1 = ", c1)
+                    #print("c0 = ", c0)
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
                         offset += 2
-                    #print(offset)
+                    print("offset =", offset)
                     #print(len(self.si4703_rds_ps))
                     self.si4703_rds_ps[(offset * 2)] = Dh
                     self.si4703_rds_ps[(offset * 2) + 1] = Dl
                 elif group_type == 2 and version_code == 0:
                     #print("a and b = ", traffic_ann)
-                    print("c3 = ", music_speech)
-                    print("c2 = ", decode_iden)
-                    print("c1 = ", c1)
-                    print("c0 = ", c0)
+                    #print("c3 = ", music_speech)
+                    #print("c2 = ", decode_iden)
+                    #print("c1 = ", c1)
+                    #print("c0 = ", c0)
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
@@ -315,7 +318,7 @@ class si4703Radio():
                         offset += 4
                     if music_speech == 1:
                         offset += 8
-                    #print(offset)
+                    print("offset =", offset)
                     #print(len(self.si4703_rds_rt))
                     self.si4703_rds_rt[(offset * 4)] = Ch
                     self.si4703_rds_rt[(offset * 4) + 1] = Cl
@@ -323,10 +326,10 @@ class si4703Radio():
                     self.si4703_rds_rt[(offset * 4) + 3] = Dl
                 elif group_type == 2 and version_code == 1:
                     #print("a and b = ", traffic_ann)
-                    print("c3 = ", music_speech)
-                    print("c2 = ", decode_iden)
-                    print("c1 = ", c1)
-                    print("c0 = ", c0)
+                    #print("c3 = ", music_speech)
+                    #print("c2 = ", decode_iden)
+                    #print("c1 = ", c1)
+                    #print("c0 = ", c0)
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
@@ -335,7 +338,7 @@ class si4703Radio():
                         offset += 4
                     if music_speech == 1:
                         offset += 8
-                    #print(offset)
+                    print("offset =",offset)
                     #print(len(self.si4703_rds_rt))
                     self.si4703_rds_rt[(offset * 2)] = Dh
                     self.si4703_rds_rt[(offset * 2) + 1] = Dl
@@ -353,11 +356,11 @@ class si4703Radio():
                 print("rds done")
                 print(" ")
 
-                time.sleep(.010)  # Wait for the RDS bit to clear
+                time.sleep(.040)  # Wait for the RDS bit to clear
             else:
                 print("No RDS")
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
-                time.sleep(.010)
+                time.sleep(.040)
 
             #if count > 20:
                 #break
