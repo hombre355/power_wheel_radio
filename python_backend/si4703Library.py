@@ -277,23 +277,17 @@ class si4703Radio():
                 Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
-                blera = (self.si4703_registers[self.SI4703_STATUSRSSI] & (3 << self.SI4703_BLERA)) >> 7
+                blera = (self.si4703_registers[self.SI4703_STATUSRSSI] & (3 << self.SI4703_BLERA)) >> 9
                 blerb = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERB)) >> 14
-                blerb2 = (self.si4703_registers[self.SI4703_READCHAN] & 0xC000)
                 blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC)) >> 12
-                blerc2 = (self.si4703_registers[self.SI4703_READCHAN] & 0x3000)
                 blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD)) >> 10
-                blerd2 = (self.si4703_registers[self.SI4703_READCHAN] & 0x0C00)
 
                 print("status rssi", bin(self.si4703_registers[self.SI4703_STATUSRSSI]))
                 print("a", hex(blera))
                 print("readchan", format(self.si4703_registers[self.SI4703_READCHAN], '#018b'))
                 print("b", hex(blerb))
-                print("b2", hex(blerb2))
                 print("c", hex(blerc))
-                print("c2", hex(blerc2))
                 print("d", hex(blerd))
-                print("d2", hex(blerd2))
 
                 if group_type != 0 and group_type != 2:
                     continue
