@@ -315,6 +315,8 @@ class si4703Radio():
                         offset += 4
                     if music_speech == 1:
                         offset += 8
+                    print(offset)
+                    print(len(self.si4703_rds_rt))
                     self.si4703_rds_rt[(offset * 4)] = Cl
                     self.si4703_rds_rt[(offset * 4) + 1] = Ch
                     self.si4703_rds_rt[(offset * 4) + 2] = Dl
@@ -333,6 +335,8 @@ class si4703Radio():
                         offset += 4
                     if music_speech == 1:
                         offset += 8
+                    print(offset)
+                    print(len(self.si4703_rds_rt))
                     self.si4703_rds_rt[(offset * 2)] = Dl
                     self.si4703_rds_rt[(offset * 2) + 1] = Dh
 
