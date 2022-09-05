@@ -250,7 +250,7 @@ class si4703Radio():
         print(" of 75)")
 
     def si4703GetRDSData(self):
-        print("Poll RDS - x to exit")
+        count = 0
         while 1:
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
@@ -286,8 +286,13 @@ class si4703Radio():
                 break
             else:
                 print("No RDS")
+                if count > 10:
+                    break
+
+                count += 1
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
                 time.sleep(.030)
+
 
     def si4703ClearRDSBuffers(self):
         self.si4703_rds_ps[:] = []
