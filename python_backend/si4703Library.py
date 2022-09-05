@@ -280,7 +280,7 @@ class si4703Radio():
                     print("A")
                 print("version code = ", version_code)
                 if group_type != 0 and group_type != 2:
-                    break
+                    continue
                 print("traffic program code = ", traffic_program_code)
                 print("pty = ", self.pty[program_type_code])
                 if group_type == 0:
