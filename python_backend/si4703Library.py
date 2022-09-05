@@ -256,11 +256,13 @@ class si4703Radio():
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
                 print("We have RDS!")
                 # byte Ah, Al, Bh, Bl, Ch, Cl, Dh, Dl;
-                Ah = (self.si4703_registers[self.SI4703_RDSA] & 0xFF00) >> 8
-                Al = (self.si4703_registers[self.SI4703_RDSA] & 0x00FF)
+                pi_code = self.si4703_registers[self.SI4703_RDSA]
+                #check_word = (self.si4703_registers[self.SI4703_RDSA] & 0x003F)
 
-                Bh = (self.si4703_registers[self.SI4703_RDSB] & 0xFF00) >> 8
-                Bl = (self.si4703_registers[self.SI4703_RDSB] & 0x00FF)
+                group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 4
+                version_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0800) >> 1
+                traffic_program_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0400) >> 1
+                program_type_code = (self.si4703_registers[self.SI4703_RDSB] & 0x03D0) >> 5
 
                 Ch = (self.si4703_registers[self.SI4703_RDSC] & 0xFF00) >> 8
                 Cl = (self.si4703_registers[self.SI4703_RDSC] & 0x00FF)
@@ -269,15 +271,16 @@ class si4703Radio():
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
                 print("RDS: ")
-                print(Ah)
-                print(Al)
-                print(Bh)
-                print(Bl)
-                print(Ch)
-                print(Cl)
-                print(Dh)
-                print(Dl)
-                print(" !")
+                print(pi_code, "in hex = ", hex(pi_code))
+                print(bin(group_type))
+                print(bin(version_code))
+                print(bin(traffic_program_code))
+                print(bin(program_type_code))
+                print(hex(Ch))
+                print(hex(Cl))
+                print(hex(Dh))
+                print(hex(Dl))
+                print("rds done")
 
                 time.sleep(.040)  # Wait for the RDS bit to clear
                 break
