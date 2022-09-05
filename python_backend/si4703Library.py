@@ -312,7 +312,7 @@ class si4703Radio():
             else:
                 print("No RDS")
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
-                time.sleep(.030)
+                time.sleep(.040)
 
             if count > 10:
                 break
