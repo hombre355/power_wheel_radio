@@ -158,7 +158,7 @@ class si4703Radio():
         # These steps come from AN230 page 20 rev 0.9
         self.si4703ReadRegisters()
         self.si4703_registers[self.SI4703_CHANNEL] &= 0xFE00  # Clear out the channel bits
-        self.si4703_registers[self.SI4703_CHANNEL] |= int(newChannel)  # Mask in the new channel
+        self.si4703_registers[self.SI4703_CHANNEL] |= int(new_Channel)  # Mask in the new channel
         self.si4703_registers[self.SI4703_CHANNEL] |= (1 << self.SI4703_TUNE)  # Set the TUNE bit to start
         self.si4703WriteRegisters()
 
