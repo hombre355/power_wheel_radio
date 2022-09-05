@@ -149,9 +149,11 @@ class si4703Radio():
             self.si4703WriteRegisters()
 
     def si4703SetChannel(self, channel):
-        newChannel = channel * 10  # e.g. 973 * 10 = 9730
-        newChannel -= 8750  # e.g. 9730 - 8750 = 980
-        newChannel /= 10  # e.g. 980 / 10 = 98
+        #newChannel = channel * 10  # e.g. 973 * 10 = 9730
+        #newChannel -= 8750  # e.g. 9730 - 8750 = 980
+        #newChannel /= 10  # e.g. 980 / 10 = 98
+
+        new_Channel = (channel - 875) / .2
 
         # These steps come from AN230 page 20 rev 0.9
         self.si4703ReadRegisters()
