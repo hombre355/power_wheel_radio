@@ -160,6 +160,7 @@ class si4703Radio():
         #  new_Channel /= 10   # 800 / 10 = 80
         #  print(new_Channel)  # 80
 
+
         # These steps come from AN230 page 20 rev 0.9
         self.si4703ReadRegisters()
         self.si4703_registers[self.SI4703_CHANNEL] &= 0xFE00  # Clear out the channel bits
