@@ -297,6 +297,8 @@ class si4703Radio():
                         offset += 1
                     if c1 == 1:
                         offset += 2
+                    print(offset)
+                    print(len(self.si4703_rds_ps))
                     self.si4703_rds_ps[(offset * 2)] = Dl
                     self.si4703_rds_ps[(offset * 2) + 1] = Dh
                 elif group_type == 2 and version_code == 0:
