@@ -89,6 +89,12 @@ class si4703Radio():
     SI4703_SEEK_DOWN = 0
     SI4703_SEEK_UP = 1
 
+    #RBDS program type
+    pty = ["unknown", "News", "Information", "Sports", "Talk", "Rock", "Classic Rock", "Adult Hits",
+           "Soft Rock", "Top 40's", "Country", "Oldies", "Soft Music", "Nostalgia", "Jazz", "Classical",
+           "R and B", "Soft R and B", "Language", "Religious Music", "Rel Talk", "Personality", "Public", "College",
+           "Spanish Talk", "Spanish Music", "Hip Hop", "NA", "NA", "Weather", "Emergency Test", "Emergency"]
+
     def __init__(self, i2cAddr, resetPin, irqPIN=-1):
 
         GPIO.setwarnings(False)
@@ -149,17 +155,9 @@ class si4703Radio():
             self.si4703WriteRegisters()
 
     def si4703SetChannel(self, channel):
-        # newChannel = channel * 10  # e.g. 973 * 10 = 9730
-        # newChannel -= 8750  # e.g. 9730 - 8750 = 980
-        # newChannel /= 10  # e.g. 980 / 10 = 98
-        print(channel)  # 1035
         new_Channel = channel - 875  # 1003 - 875 = 128
-        print(new_Channel)  # 128
         new_Channel /= .2   # 128 / .2 = 640
-        print(new_Channel)  # 640
         new_Channel /= 10   # 640 / 10 = 64
-        print(new_Channel)  # 64
-
 
         # These steps come from AN230 page 20 rev 0.9
         self.si4703ReadRegisters()
@@ -260,7 +258,12 @@ class si4703Radio():
                 group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 4
                 version_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0800) >> 1
                 traffic_program_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0400) >> 1
-                program_type_code = (self.si4703_registers[self.SI4703_RDSB] & 0x03D0) >> 5
+                program_type_code = (self.si4703_registers[self.SI4703_RDSB] & 0x03E0) >> 5
+                traffic_ann = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
+                music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
+                decode_iden = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
+                c1 = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
+                c0 = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
 
                 Ch = (self.si4703_registers[self.SI4703_RDSC] & 0xFF00) >> 8
                 Cl = (self.si4703_registers[self.SI4703_RDSC] & 0x00FF)
@@ -271,9 +274,14 @@ class si4703Radio():
                 print("RDS: ")
                 print(hex(pi_code))
                 print(hex(group_type))
-                print(bin(version_code))
-                print(bin(traffic_program_code))
-                print(program_type_code)
+                print(version_code)
+                print(traffic_program_code)
+                print(self.pty[program_type_code])
+                print(traffic_ann)
+                print(music_speech)
+                print(decode_iden)
+                print(c1)
+                print(c0)
                 print(hex(Ch))
                 print(hex(Cl))
                 print(hex(Dh))
