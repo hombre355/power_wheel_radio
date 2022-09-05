@@ -273,31 +273,52 @@ class si4703Radio():
 
                 print("RDS: ")
                 print(hex(pi_code))
-                print(group_type)  # start here on why it is more then 4 bits
-                print(version_code)
-                print(traffic_program_code)
-                print(self.pty[program_type_code])
-                print(traffic_ann)
-                print(music_speech)
-                print(decode_iden)
-                print(c1)
-                print(c0)
-                print(hex(Ch))
-                print(hex(Cl))
-                print(hex(Dh))
-                print(hex(Dl))
+                print(group_type, "in binary = ", bin(group_type))
+                if version_code:
+                    print("B")
+                else:
+                    print("A")
+                print("version code = ", version_code)
+                if group_type != 0 and group_type != 2:
+                    break
+                print("traffic program code = ", traffic_program_code)
+                print("pty = ", self.pty[program_type_code])
+                if group_type == 0:
+                    print("traf ann = ", traffic_ann)
+                    print("m and s = ", music_speech)
+                    print("decode iden= ", decode_iden)
+                    print("c1 = ", c1)
+                    print("c2 = ", c0)
+                elif group_type == 2 and version_code == 0:
+                    print("a and b = ", traffic_ann)
+                    print("c3 = ", music_speech)
+                    print("c2 = ", decode_iden)
+                    print("c1 = ", c1)
+                    print("c0 = ", c0)
+                elif group_type == 2 and version_code == 1:
+                    print("a and b = ", traffic_ann)
+                    print("c3 = ", music_speech)
+                    print("c2 = ", decode_iden)
+                    print("c1 = ", c1)
+                    print("c0 = ", c0)
+
+                print("Ch = ", hex(Ch))
+                print("Cl = ", hex(Cl))
+                print("Dh = ", hex(Dh))
+                print("Dl = ", hex(Dl))
                 print("rds done")
 
                 time.sleep(.040)  # Wait for the RDS bit to clear
-                break
             else:
                 print("No RDS")
-                if count > 10:
-                    break
-
-                count += 1
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
                 time.sleep(.030)
+
+            if count > 10:
+                break
+
+            count += 1
+
 
 
     def si4703ClearRDSBuffers(self):
