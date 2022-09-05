@@ -29,11 +29,12 @@ class si4703Radio():
     SI4703_RDSD = 0x0F
 
     # Register 0x02 - POWERCFG
-    SI4703_SMUTE = 15
-    SI4703_DMUTE = 14
+    SI4703_SMUTE  = 15
+    SI4703_DMUTE  = 14
+    SI4703_RDSM   = 11
     SI4703_SKMODE = 10
     SI4703_SEEKUP = 9
-    SI4703_SEEK = 8
+    SI4703_SEEK   = 8
     SI4703_ENABLE = 0
 
     # Register 0x03 - CHANNEL
