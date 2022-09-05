@@ -282,19 +282,21 @@ class si4703Radio():
                 blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC)) >> 12
                 blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD)) >> 10
 
-                print("status rssi", bin(self.si4703_registers[self.SI4703_STATUSRSSI]))
-                print("a", hex(blera))
-                print("readchan", format(self.si4703_registers[self.SI4703_READCHAN], '#018b'))
-                print("b", hex(blerb))
-                print("c", hex(blerc))
-                print("d", hex(blerd))
+                #print("status rssi", bin(self.si4703_registers[self.SI4703_STATUSRSSI]))
+                #print("a", hex(blera))
+                #print("readchan", format(self.si4703_registers[self.SI4703_READCHAN], '#018b'))
+                #print("b", hex(blerb))
+                #print("c", hex(blerc))
+                #print("d", hex(blerd))
 
                 if group_type != 0 and group_type != 2:
                     print("group", group_type)
+                    print(" ")
                     continue
 
                 if blerb != 0:
                     print("blrb", blerb)
+                    print(" ")
                     continue
 
                 print("RDS: ")
@@ -312,6 +314,7 @@ class si4703Radio():
                 if group_type == 0 and version_code == 0:
                     if blerd != 0:
                         print("blrd", blerd)
+                        print(" ")
                         continue
                     #print("traf ann = ", traffic_ann)
                     #print("m and s = ", music_speech)
@@ -329,6 +332,7 @@ class si4703Radio():
                 elif group_type == 2 and version_code == 0:
                     if blerc != 0:
                         print("blrc", blerc)
+                        print(" ")
                         continue
 
                     #print("a and b = ", traffic_ann)
@@ -351,6 +355,7 @@ class si4703Radio():
 
                     if blerd != 0:
                         print("blrd", blerd)
+                        print(" ")
                         continue
 
                     self.si4703_rds_rt[(offset * 4) + 2] = Dh
@@ -359,6 +364,7 @@ class si4703Radio():
                 elif group_type == 2 and version_code == 1:
                     if blerd != 0:
                         print("blrd", blerd)
+                        print(" ")
                         continue
                     #print("a and b = ", traffic_ann)
                     #print("c3 = ", music_speech)
