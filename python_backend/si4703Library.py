@@ -255,9 +255,7 @@ class si4703Radio():
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
                 print("We have RDS!")
-                # byte Ah, Al, Bh, Bl, Ch, Cl, Dh, Dl;
                 pi_code = self.si4703_registers[self.SI4703_RDSA]
-                #check_word = (self.si4703_registers[self.SI4703_RDSA] & 0x003F)
 
                 group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 4
                 version_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0800) >> 1
