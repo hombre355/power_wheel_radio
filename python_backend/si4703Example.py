@@ -42,7 +42,7 @@ def main():
                 radio.si4703ClearRDSBuffers()
                 radio.si4703GetRDSData()
                 # print(test)
-                # socket.send_string(str(test))
+                socket.send_string("hi")
             if message == "t":
                 print("connected to Iphone")
             if message == "r":
