@@ -270,7 +270,7 @@ class si4703Radio():
                 music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0008) >> 1
                 decode_iden = (self.si4703_registers[self.SI4703_RDSB] & 0x0004) >> 1
                 c1 = (self.si4703_registers[self.SI4703_RDSB] & 0x0002) >> 1
-                c0 = (self.si4703_registers[self.SI4703_RDSB] & 0x0001) >> 1
+                c0 = (self.si4703_registers[self.SI4703_RDSB] & 0x0001)
 
                 testC = self.si4703_registers[self.SI4703_RDSC] & 0xFFFF
 
@@ -307,33 +307,11 @@ class si4703Radio():
                         offset += 1
                     if c1 == 1:
                         offset += 2
-                    if decode_iden == 1:
-                        offset += 4
-                    if music_speech == 1:
-                        offset += 8
                     print("offset =", offset)
-                    print("picode", hex(pi_code))
-                    print("ch", hex(Ch))
-                    print("cl", hex(Cl))
-                    print("c0 =", c0)
-                    print("c1", c1)
-                    print("dec", decode_iden)
-                    print("mus", music_speech)
-                    print("rdsB", hex(testB))
-                    print("rdsC", hex(testC))
-                    print("rdsD", hex(testD))
-
-                    if blerc != 0:
-                        self.si4703_rds_ps[(offset * 2)] = 0x20
-                        self.si4703_rds_ps[(offset * 2) + 1] = 0x20
-                        continue
-
-                    self.si4703_rds_ps[(offset * 2)] = Ch
-                    self.si4703_rds_ps[(offset * 2) + 1] = Cl
-
+                    # _ if data has errors
                     if blerd != 0:
-                        self.si4703_rds_ps[(offset * 2) + 2] = 0x20
-                        self.si4703_rds_ps[(offset * 2) + 3] = 0x20
+                        self.si4703_rds_ps[(offset * 2) + 2] = 0x5F
+                        self.si4703_rds_ps[(offset * 2) + 3] = 0x5F
                         continue
 
                     self.si4703_rds_ps[(offset * 2) + 2] = Dh
@@ -351,16 +329,16 @@ class si4703Radio():
                     print("offset =", offset)
 
                     if blerc != 0:
-                        self.si4703_rds_rt[(offset * 4)] = 0x20
-                        self.si4703_rds_rt[(offset * 4) + 1] = 0x20
+                        self.si4703_rds_rt[(offset * 4)] = 0x5F
+                        self.si4703_rds_rt[(offset * 4) + 1] = 0x5F
                         continue
 
                     self.si4703_rds_rt[(offset * 4)] = Ch
                     self.si4703_rds_rt[(offset * 4) + 1] = Cl
 
                     if blerd != 0:
-                        self.si4703_rds_rt[(offset * 4) + 2] = 0x20
-                        self.si4703_rds_rt[(offset * 4) + 3] = 0x20
+                        self.si4703_rds_rt[(offset * 4) + 2] = 0x5F
+                        self.si4703_rds_rt[(offset * 4) + 3] = 0x5F
                         continue
 
                     self.si4703_rds_rt[(offset * 4) + 2] = Dh
@@ -377,8 +355,8 @@ class si4703Radio():
                         offset += 8
                     print("offset =", offset)
                     if blerd != 0:
-                        self.si4703_rds_rt[(offset * 2)] = 0x20
-                        self.si4703_rds_rt[(offset * 2) + 1] = 0x20
+                        self.si4703_rds_rt[(offset * 2)] = 0x5F
+                        self.si4703_rds_rt[(offset * 2) + 1] = 0x5F
                         continue
                     self.si4703_rds_rt[(offset * 2)] = Dh
                     self.si4703_rds_rt[(offset * 2) + 1] = Dl
