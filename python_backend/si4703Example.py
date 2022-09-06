@@ -16,8 +16,8 @@ def main():
     radio = si4703Radio(0x10, 5, 19)
     radio.si4703Init()
     radio.si4703SetChannel(1003)
-    radio.si4703SetVolume(2)
-    lock = Lock
+    radio.si4703SetVolume(12)
+    lock = Lock()
 
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
@@ -47,10 +47,10 @@ def main():
                 radio.si4703SetVolume(radio.si4703GetVolume() - 1)
                 socket.send_string(str(radio.si4703GetVolume()))
             if message == "d":
-                lock.acquire()
-                socket.send_string(str(radio.si4703GetStationName()))
-                socket.send_string(str(radio.si4703GetSongName()))
-                lock.release()
+                with lock:
+                    socket.send_string(str(radio.si4703GetStationName()))
+                    socket.send_string(str(radio.si4703GetSongName()))
+
             if message == "t":
                 print("connected to Iphone")
             if message == "r":
