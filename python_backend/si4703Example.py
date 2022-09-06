@@ -14,8 +14,8 @@ def main():
     radio = si4703Radio(0x10, 5, 19)
     radio.si4703Init()
     radio.si4703SetChannel(1003)
+    radio.si4703SetVolume(8)
 
-    radio.si4703SetVolume(15)
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
     thread = threading.Thread(target=radio.si4703GetRDSData)

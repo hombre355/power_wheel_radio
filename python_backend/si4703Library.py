@@ -262,9 +262,9 @@ class si4703Radio():
 
                 group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 12
                 version_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0800) >> 1
-                traffic_program_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0400) >> 1
-                program_type_code = (self.si4703_registers[self.SI4703_RDSB] & 0x03E0) >> 5
-                traffic_ann = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
+                #traffic_program_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0400) >> 1
+                #program_type_code = (self.si4703_registers[self.SI4703_RDSB] & 0x03E0) >> 5
+                #traffic_ann = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
                 music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0008) >> 1
                 decode_iden = (self.si4703_registers[self.SI4703_RDSB] & 0x0004) >> 1
                 c1 = (self.si4703_registers[self.SI4703_RDSB] & 0x0002) >> 1
@@ -310,7 +310,9 @@ class si4703Radio():
                         self.si4703_rds_ps[(offset * 2)] = 0x20
                         self.si4703_rds_ps[(offset * 2) + 1] = 0x20
                         continue
-
+                    print(hex(pi_code))
+                    print(hex(Ch))
+                    print(hex(Cl))
                     self.si4703_rds_ps[(offset * 2)] = Ch
                     self.si4703_rds_ps[(offset * 2) + 1] = Cl
 
