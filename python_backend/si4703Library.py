@@ -251,11 +251,8 @@ class si4703Radio():
         print(" of 75)")
 
     def si4703GetRDSData(self):
-        #count = 0
         while 1:
             offset = 0
-            station_name = ""
-            song_name = ""
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
                 group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 12
@@ -275,29 +272,24 @@ class si4703Radio():
                     continue
 
                 if group_type == 0 and version_code == 0:
-                    print("0A")
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
                         offset += 2
-                    #print("offset =", offset)
 
                     self.si4703_rds_ps[(offset * 2)] = Dh
                     self.si4703_rds_ps[(offset * 2) + 1] = Dl
 
                 if group_type == 0 and version_code == 1:
-                    print("0B")
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
                         offset += 2
-                    #print("offset =", offset)
 
                     self.si4703_rds_ps[(offset * 2)] = Dh
                     self.si4703_rds_ps[(offset * 2) + 1] = Dl
 
                 elif group_type == 2 and version_code == 0:
-                    print("2A")
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
@@ -306,7 +298,6 @@ class si4703Radio():
                         offset += 4
                     if music_speech == 1:
                         offset += 8
-                    #print("offset =", offset)
 
                     self.si4703_rds_rt[(offset * 4)] = Ch
                     self.si4703_rds_rt[(offset * 4) + 1] = Cl
@@ -315,7 +306,6 @@ class si4703Radio():
                     self.si4703_rds_rt[(offset * 4) + 3] = Dl
 
                 elif group_type == 2 and version_code == 1:
-                    print("2B")
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
@@ -324,25 +314,19 @@ class si4703Radio():
                         offset += 4
                     if music_speech == 1:
                         offset += 8
-                    #print("offset =", offset)
                     self.si4703_rds_rt[(offset * 2)] = Dh
                     self.si4703_rds_rt[(offset * 2) + 1] = Dl
 
-                for x in self.si4703_rds_ps:
-                    station_name += chr(x)
+                #for x in self.si4703_rds_ps:
+                    # need to create gobal varible to retrive from also thread safe
+                    #station_name += chr(x)
 
-                for y in self.si4703_rds_rt:
-                    song_name += chr(y)
-
-                print("station name =", station_name)
-                print("song name =", song_name)
-                print("rds done")
-                print(" ")
+                #for y in self.si4703_rds_rt:
+                    # need to create gobal varible to retrive from also thread safe
+                    #song_name += chr(y)
 
                 time.sleep(.040)  # Wait for the RDS bit to clear
             else:
-                print("No RDS")
-                print(" ")
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
                 time.sleep(.040)
 
