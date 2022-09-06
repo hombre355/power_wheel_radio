@@ -272,29 +272,25 @@ class si4703Radio():
                 c1 = (self.si4703_registers[self.SI4703_RDSB] & 0x0002) >> 1
                 c0 = (self.si4703_registers[self.SI4703_RDSB] & 0x0001)
 
-                testC = self.si4703_registers[self.SI4703_RDSC] & 0xFFFF
-
                 Ch = (self.si4703_registers[self.SI4703_RDSC] & 0xFF00) >> 8
                 Cl = (self.si4703_registers[self.SI4703_RDSC] & 0x00FF)
-
-                testD = self.si4703_registers[self.SI4703_RDSD] & 0xFFFF
 
                 Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
-                blerb = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERB)) >> 14
-                blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC)) >> 12
-                blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD)) >> 10
+                #blerb = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERB)) >> 14
+                #blerc = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERC)) >> 12
+                #blerd = (self.si4703_registers[self.SI4703_READCHAN] & (3 << self.SI4703_BLERD)) >> 10
 
                 if group_type != 0 and group_type != 2:
                     print("group", group_type)
                     print(" ")
                     continue
 
-                if blerb != 0:
-                    print("blrb", blerb)
-                    print(" ")
-                    continue
+                #if blerb != 0:
+                    #print("blrb", blerb)
+                    #print(" ")
+                    #continue
 
                 #print("RDS: ")
                 #print("group_type = ", group_type)
@@ -310,10 +306,10 @@ class si4703Radio():
                         offset += 2
                     print("offset =", offset)
                     # _ if data has errors
-                    if blerd != 0:
-                        self.si4703_rds_ps[(offset * 2)] = 0x5F
-                        self.si4703_rds_ps[(offset * 2) + 1] = 0x5F
-                        continue
+                    #if blerd != 0:
+                        #self.si4703_rds_ps[(offset * 2)] = 0x5F
+                        #self.si4703_rds_ps[(offset * 2) + 1] = 0x5F
+                        #continue
 
                     self.si4703_rds_ps[(offset * 2)] = Dh
                     self.si4703_rds_ps[(offset * 2) + 1] = Dl
@@ -330,18 +326,18 @@ class si4703Radio():
                         offset += 8
                     print("offset =", offset)
 
-                    if blerc != 0:
-                        self.si4703_rds_rt[(offset * 4)] = 0x5F
-                        self.si4703_rds_rt[(offset * 4) + 1] = 0x5F
-                        continue
+                    #if blerc != 0:
+                        #self.si4703_rds_rt[(offset * 4)] = 0x5F
+                        #self.si4703_rds_rt[(offset * 4) + 1] = 0x5F
+                        #continue
 
                     self.si4703_rds_rt[(offset * 4)] = Ch
                     self.si4703_rds_rt[(offset * 4) + 1] = Cl
 
-                    if blerd != 0:
-                        self.si4703_rds_rt[(offset * 4) + 2] = 0x5F
-                        self.si4703_rds_rt[(offset * 4) + 3] = 0x5F
-                        continue
+                    #if blerd != 0:
+                        #self.si4703_rds_rt[(offset * 4) + 2] = 0x5F
+                        #self.si4703_rds_rt[(offset * 4) + 3] = 0x5F
+                        #continue
 
                     self.si4703_rds_rt[(offset * 4) + 2] = Dh
                     self.si4703_rds_rt[(offset * 4) + 3] = Dl
@@ -357,19 +353,17 @@ class si4703Radio():
                     if music_speech == 1:
                         offset += 8
                     print("offset =", offset)
-                    if blerd != 0:
-                        self.si4703_rds_rt[(offset * 2)] = 0x5F
-                        self.si4703_rds_rt[(offset * 2) + 1] = 0x5F
-                        continue
+                    #if blerd != 0:
+                        #self.si4703_rds_rt[(offset * 2)] = 0x5F
+                        #self.si4703_rds_rt[(offset * 2) + 1] = 0x5F
+                        #continue
                     self.si4703_rds_rt[(offset * 2)] = Dh
                     self.si4703_rds_rt[(offset * 2) + 1] = Dl
 
                 for x in self.si4703_rds_ps:
-                    #print("x =", chr(x))
                     station_name += chr(x)
 
                 for y in self.si4703_rds_rt:
-                    #print("y =", chr(y))
                     song_name += chr(y)
 
                 print("station name =", station_name)
@@ -409,7 +403,7 @@ class si4703Radio():
 
         self.si4703ReadRegisters()  # Read the current register set
         self.si4703_registers[self.SI4703_POWERCFG] = 0x4001  # Enable the IC
-        self.si4703_registers[self.SI4703_POWERCFG] |= (1 << self.SI4703_RDSM)  # Enable RDS Verbose
+        #self.si4703_registers[self.SI4703_POWERCFG] |= (1 << self.SI4703_RDSM)  # Enable RDS Verbose
 
         self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_RDS)  # Enable RDS
         #  self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_DE)  # 50kHz Europe setup
