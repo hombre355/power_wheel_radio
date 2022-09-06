@@ -310,12 +310,12 @@ class si4703Radio():
                     print("offset =", offset)
                     # _ if data has errors
                     if blerd != 0:
-                        self.si4703_rds_ps[(offset * 2) + 2] = 0x5F
-                        self.si4703_rds_ps[(offset * 2) + 3] = 0x5F
+                        self.si4703_rds_ps[(offset * 2)] = 0x5F
+                        self.si4703_rds_ps[(offset * 2) + 1] = 0x5F
                         continue
 
-                    self.si4703_rds_ps[(offset * 2) + 2] = Dh
-                    self.si4703_rds_ps[(offset * 2) + 3] = Dl
+                    self.si4703_rds_ps[(offset * 2)] = Dh
+                    self.si4703_rds_ps[(offset * 2) + 1] = Dl
 
                 elif group_type == 2 and version_code == 0:
                     if c0 == 1:
