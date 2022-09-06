@@ -267,8 +267,8 @@ class si4703Radio():
                 #traffic_program_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0400) >> 1
                 #program_type_code = (self.si4703_registers[self.SI4703_RDSB] & 0x03E0) >> 5
                 #traffic_ann = (self.si4703_registers[self.SI4703_RDSB] & 0x0010) >> 1
-                music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0008) >> 1
-                decode_iden = (self.si4703_registers[self.SI4703_RDSB] & 0x0004) >> 1
+                music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0008) >> 3
+                decode_iden = (self.si4703_registers[self.SI4703_RDSB] & 0x0004) >> 2
                 c1 = (self.si4703_registers[self.SI4703_RDSB] & 0x0002) >> 1
                 c0 = (self.si4703_registers[self.SI4703_RDSB] & 0x0001)
 
@@ -296,13 +296,14 @@ class si4703Radio():
                     print(" ")
                     continue
 
-                print("RDS: ")
-                print("group_type = ", group_type)
-                if version_code:
-                    print("B")
-                else:
-                    print("A")
+                #print("RDS: ")
+                #print("group_type = ", group_type)
+                #if version_code:
+                #    print("B")
+                #else:
+                #    print("A")
                 if group_type == 0 and version_code == 0:
+                    print("0A")
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
@@ -318,6 +319,7 @@ class si4703Radio():
                     self.si4703_rds_ps[(offset * 2) + 1] = Dl
 
                 elif group_type == 2 and version_code == 0:
+                    print("2A")
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
@@ -345,6 +347,7 @@ class si4703Radio():
                     self.si4703_rds_rt[(offset * 4) + 3] = Dl
 
                 elif group_type == 2 and version_code == 1:
+                    print("2B")
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
