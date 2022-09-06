@@ -260,6 +260,8 @@ class si4703Radio():
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
                 pi_code = self.si4703_registers[self.SI4703_RDSA]
 
+                testB = self.si4703_registers[self.SI4703_RDSB] & 0xFFFF
+
                 group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 12
                 version_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0800) >> 1
                 #traffic_program_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0400) >> 1
@@ -270,8 +272,12 @@ class si4703Radio():
                 c1 = (self.si4703_registers[self.SI4703_RDSB] & 0x0002) >> 1
                 c0 = (self.si4703_registers[self.SI4703_RDSB] & 0x0001) >> 1
 
+                testC = self.si4703_registers[self.SI4703_RDSC] & 0xFFFF
+
                 Ch = (self.si4703_registers[self.SI4703_RDSC] & 0xFF00) >> 8
                 Cl = (self.si4703_registers[self.SI4703_RDSC] & 0x00FF)
+
+                testD = self.si4703_registers[self.SI4703_RDSD] & 0xFFFF
 
                 Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
@@ -313,7 +319,9 @@ class si4703Radio():
                     print("c1", c1)
                     print("dec", decode_iden)
                     print("mus", music_speech)
-                    print("rdsB", hex(self.si4703_registers[self.SI4703_RDSB]))
+                    print("rdsB", hex(testB))
+                    print("rdsC", hex(testC))
+                    print("rdsD", hex(testD))
 
                     if blerc != 0:
                         self.si4703_rds_ps[(offset * 2)] = 0x20
