@@ -306,13 +306,20 @@ class si4703Radio():
                     if music_speech == 1:
                         offset += 8
                     print("offset =", offset)
+                    print("picode", hex(pi_code))
+                    print("ch", hex(Ch))
+                    print("cl", hex(Cl))
+                    print("c0 =", c0)
+                    print("c1", c1)
+                    print("dec", decode_iden)
+                    print("mus", music_speech)
+                    print("rdsB", hex(self.si4703_registers[self.SI4703_RDSB]))
+
                     if blerc != 0:
                         self.si4703_rds_ps[(offset * 2)] = 0x20
                         self.si4703_rds_ps[(offset * 2) + 1] = 0x20
                         continue
-                    print(hex(pi_code))
-                    print(hex(Ch))
-                    print(hex(Cl))
+
                     self.si4703_rds_ps[(offset * 2)] = Ch
                     self.si4703_rds_ps[(offset * 2) + 1] = Cl
 
