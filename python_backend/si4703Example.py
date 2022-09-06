@@ -3,7 +3,9 @@
 # example program for testing the si4703 library
 from si4703Library import si4703Radio
 import zmq
-import threading
+from threading import Thread, Lock
+import time
+
 
 def main():
     context = zmq.Context()
@@ -15,13 +17,13 @@ def main():
     radio.si4703Init()
     radio.si4703SetChannel(1003)
     radio.si4703SetVolume(2)
+    lock = Lock
 
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
-    thread = threading.Thread(target=radio.si4703GetRDSData)
+    thread = Thread(target=radio.si4703StoreRDSData, args=(lock,))
     thread.start()
     print("ready for commands")
-
 
     try:
         while True:
@@ -45,10 +47,9 @@ def main():
                 radio.si4703SetVolume(radio.si4703GetVolume() - 1)
                 socket.send_string(str(radio.si4703GetVolume()))
             if message == "d":
-                radio.si4703ClearRDSBuffers()
-                radio.si4703GetRDSData()
-                # print(test)
-                socket.send_string("hi")
+                with lock:
+                    socket.send_string(str(radio.si4703GetStationName()))
+                    socket.send_string(str(radio.si4703GetSongName()))
             if message == "t":
                 print("connected to Iphone")
             if message == "r":

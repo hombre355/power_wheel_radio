@@ -29,12 +29,12 @@ class si4703Radio():
     SI4703_RDSD = 0x0F
 
     # Register 0x02 - POWERCFG
-    SI4703_SMUTE  = 15
-    SI4703_DMUTE  = 14
-    SI4703_RDSM   = 11
+    SI4703_SMUTE = 15
+    SI4703_DMUTE = 14
+    SI4703_RDSM = 11
     SI4703_SKMODE = 10
     SI4703_SEEKUP = 9
-    SI4703_SEEK   = 8
+    SI4703_SEEK = 8
     SI4703_ENABLE = 0
 
     # Register 0x03 - CHANNEL
@@ -91,7 +91,7 @@ class si4703Radio():
     SI4703_SEEK_DOWN = 0
     SI4703_SEEK_UP = 1
 
-    #RBDS program type
+    # RBDS program type
     pty = ["unknown", "News", "Information", "Sports", "Talk", "Rock", "Classic Rock", "Adult Hits",
            "Soft Rock", "Top 40's", "Country", "Oldies", "Soft Music", "Nostalgia", "Jazz", "Classical",
            "R and B", "Soft R and B", "Language", "Religious Music", "Rel Talk", "Personality", "Public", "College",
@@ -106,7 +106,7 @@ class si4703Radio():
         self.resetPin = resetPin
         self.irqPIN = irqPIN
 
-        # setup the GPIO variables
+        # Setup the GPIO variables
         self.i2c = smbus.SMBus(1)
         self.GPIO.setmode(GPIO.BCM)
         self.GPIO.setup(self.resetPin, GPIO.OUT)
@@ -117,7 +117,6 @@ class si4703Radio():
         self.si4703_registers = [0] * 16
         self.si4703_rds_ps = [0] * 8
         self.si4703_rds_rt = [0] * 64
-        #self.si4703ClearRDSBuffers()
 
         if self.irqPIN == -1:
             self.si4703UseIRQ = False
@@ -153,14 +152,14 @@ class si4703Radio():
                 if (self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_STC)) != 0:
                     break  # tuning complete
             self.si4703ReadRegisters()
-            self.si4703_registers[self.SI4703_POWERCFG] &= ~(
-                    1 << self.SI4703_SEEK)  # Clear the tune after a tune has completed
+            # Clear the tune after a tune has completed
+            self.si4703_registers[self.SI4703_POWERCFG] &= ~(1 << self.SI4703_SEEK)
             self.si4703WriteRegisters()
 
     def si4703SetChannel(self, channel):
         new_Channel = channel - 875  # 1003 - 875 = 128
-        new_Channel /= .2   # 128 / .2 = 640
-        new_Channel /= 10   # 640 / 10 = 64
+        new_Channel /= .2  # 128 / .2 = 640
+        new_Channel /= 10  # 640 / 10 = 64
 
         # These steps come from AN230 page 20 rev 0.9
         self.si4703ReadRegisters()
@@ -212,45 +211,7 @@ class si4703Radio():
         self.si4703_registers[self.SI4703_POWERCFG] ^= (1 << self.SI4703_DMUTE)  # toggle mute bit
         self.si4703WriteRegisters()  # Update
 
-    def si4703DisplayStatus(self):
-        self.si4703ReadRegisters()
-        print("Radio Status")
-        if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
-            print("RDS Available")
-            block_errors = (self.si4703_registers[self.SI4703_STATUSRSSI] & 0x0600) >> 9
-            if block_errors == 0:
-                print(" (No RDS errors)")
-            if block_errors == 1:
-                print(" (1-2 RDS errors)")
-            if block_errors == 2:
-                print(" (3-5 RDS errors)")
-            if block_errors == 3:
-                print(" (6+ RDS errors)")
-        else:
-            print("No RDS Data")
-
-        if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_STC):
-            print(" (Tune Complete)")
-        if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_SFBL):
-            print(" (Seek Fail)")
-        else:
-            print(" (Seek Successful!)")
-        if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_AFCRL):
-            print(" (AFC/Invalid Channel)")
-        if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSS):
-            print(" (RDS Synch)")
-
-        if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_STEREO):
-            print(" (Stereo!)")
-        else:
-            print(" (Mono)")
-
-        rssi = self.si4703_registers[self.SI4703_STATUSRSSI] & 0x00FF  # Mask in RSSI
-        print(" (RSSI=")
-        print(rssi)
-        print(" of 75)")
-
-    def si4703GetRDSData(self):
+    def si4703StoreRDSData(self, lock):
         while 1:
             offset = 0
             self.si4703ReadRegisters()
@@ -268,28 +229,23 @@ class si4703Radio():
                 Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
                 Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
 
-                if group_type != 0 and group_type != 2:
-                    continue
-
-                if group_type == 0 and version_code == 0:
+                # I only care about Station name and radio text
+                # 0A and 0B, Getting Station name
+                if group_type == 0:
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
                         offset += 2
 
-                    self.si4703_rds_ps[(offset * 2)] = Dh
-                    self.si4703_rds_ps[(offset * 2) + 1] = Dl
+                    #
+                    if lock.acquire(blocking=False):
+                        self.si4703_rds_ps[(offset * 2)] = Dh
+                        self.si4703_rds_ps[(offset * 2) + 1] = Dl
+                        lock.release()
 
-                if group_type == 0 and version_code == 1:
-                    if c0 == 1:
-                        offset += 1
-                    if c1 == 1:
-                        offset += 2
 
-                    self.si4703_rds_ps[(offset * 2)] = Dh
-                    self.si4703_rds_ps[(offset * 2) + 1] = Dl
-
-                elif group_type == 2 and version_code == 0:
+                # 2B, getting Song name
+                elif group_type == 2:
                     if c0 == 1:
                         offset += 1
                     if c1 == 1:
@@ -299,43 +255,42 @@ class si4703Radio():
                     if music_speech == 1:
                         offset += 8
 
-                    self.si4703_rds_rt[(offset * 4)] = Ch
-                    self.si4703_rds_rt[(offset * 4) + 1] = Cl
+                    if lock.acquire(blocking=False):
+                        self.si4703_rds_rt[(offset * 4) + 2] = Dh
+                        self.si4703_rds_rt[(offset * 4) + 3] = Dl
 
-                    self.si4703_rds_rt[(offset * 4) + 2] = Dh
-                    self.si4703_rds_rt[(offset * 4) + 3] = Dl
+                        # 2A
+                        if version_code == 0:
+                            self.si4703_rds_rt[(offset * 4)] = Ch
+                            self.si4703_rds_rt[(offset * 4) + 1] = Cl
 
-                elif group_type == 2 and version_code == 1:
-                    if c0 == 1:
-                        offset += 1
-                    if c1 == 1:
-                        offset += 2
-                    if decode_iden == 1:
-                        offset += 4
-                    if music_speech == 1:
-                        offset += 8
-                    self.si4703_rds_rt[(offset * 2)] = Dh
-                    self.si4703_rds_rt[(offset * 2) + 1] = Dl
+                        lock.release()
 
-                #for x in self.si4703_rds_ps:
-                    # need to create gobal varible to retrive from also thread safe
-                    #station_name += chr(x)
+                # for x in self.si4703_rds_ps:
+                # need to create gobal varible to retrive from also thread safe
+                # station_name += chr(x)
 
-                #for y in self.si4703_rds_rt:
-                    # need to create gobal varible to retrive from also thread safe
-                    #song_name += chr(y)
+                # for y in self.si4703_rds_rt:
+                # need to create gobal varible to retrive from also thread safe
+                # song_name += chr(y)
 
                 time.sleep(.040)  # Wait for the RDS bit to clear
             else:
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
                 time.sleep(.040)
 
+    def si4703GetStationName(self):
+        return self.si4703_rds_ps
+
+    def si4703GetSongName(self):
+        return self.si4703_rds_rt
+
     def si4703ClearRDSBuffers(self):
         self.si4703_rds_ps[:] = []
         self.si4703_rds_rt[:] = []
 
     def si4703Init(self):
-        # To get the Si4703 inito 2-wire mode, SEN needs to be high and SDIO needs to be low after a reset
+        # To get the Si4703 into 2-wire mode, SEN needs to be high and SDIO needs to be low after a reset
         # The breakout board has SEN pulled high, but also has SDIO pulled high. Therefore, after a normal power up
         # The Si4703 will be in an unknown state. RST must be controlled
 
@@ -355,7 +310,7 @@ class si4703Radio():
 
         self.si4703ReadRegisters()  # Read the current register set
         self.si4703_registers[self.SI4703_POWERCFG] = 0x4001  # Enable the IC
-        #self.si4703_registers[self.SI4703_POWERCFG] |= (1 << self.SI4703_RDSM)  # Enable RDS Verbose
+        # self.si4703_registers[self.SI4703_POWERCFG] |= (1 << self.SI4703_RDSM)  # Enable RDS Verbose
 
         self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_RDS)  # Enable RDS
         #  self.si4703_registers[self.SI4703_SYSCONFIG1] |= (1 << self.SI4703_DE)  # 50kHz Europe setup
@@ -386,7 +341,7 @@ class si4703Radio():
 
     def si4703ShutDown(self):
         self.si4703ReadRegisters()  # Read the current register set
-        # Powerdown as defined in AN230 page 13 rev 0.9
+        # Power down as defined in AN230 page 13 rev 0.9
         self.si4703_registers[self.SI4703_TEST1] = 0x7C04  # Power down the IC
         self.si4703_registers[self.SI4703_POWERCFG] = 0x002A  # Power down the IC
         self.si4703_registers[self.SI4703_SYSCONFIG1] = 0x0041  # Power down the IC
@@ -426,45 +381,6 @@ class si4703Radio():
             if regIndex == 0x10:
                 regIndex = 0
 
-    def si4703ReadRDS(self):
-        milli = int(time * 1000)
-        endTime = milli + 15000
-        completed = [False, False, False, False]
-        completedCount = 0
-        rds_buffer = buffer.array('u')
-        while (completedCount < 4) and (milli < endTime):
-            self.si4703ReadRegisters()
-            if self.si4703_registers[self.STATUSRSSI] & (1 << self.SI4703_RDSR):
-                # ls 2 bits of B determine the 4 letter pairs
-                # once we have a full set return
-                # if you get nothing after 20 readings return with empty string
-                b = self.si4703_registers[self.SI4703_RDSB]
-                index = b & 0x03
-                if not completed[index] and b < 500:
-                    completed[index] = True
-                    completedCount += 1
-                    Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
-                    Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
-                    rds_buffer[index * 2] = Dh
-                    rds_buffer[index * 2 + 1] = Dl
-                    print(self.si4703_registers[self.SI4703_RDSD])
-                    print(index)
-                    print(Dh)
-                    print(Dl)
-
-                time.sleep(.04)  # Wait for the RDS bit to clear
-
-            else:
-                time.sleep(
-                    .03)  # From AN230, using the polling method 40ms should be sufficient amount of time between checks
-
-            if milli >= endTime:
-                rds_buffer[0] = '\0'
-                return
-
-        rds_buffer[8] = '\0'
-        return rds_buffer
-
     def si4703_printRegisters(self):
         # Read back the registers
         self.si4703ReadRegisters()
@@ -472,73 +388,3 @@ class si4703Radio():
         # Print the response array for debugging
         for x in range(16):
             print(self.si4703_registers[x])
-
-    def isValidAsciiBasicCharacterSet(self, rdsData):
-        return 32 <= rdsData <= 127
-
-    def isValidRdsData(self):
-        blockErrors = ((self.si4703_registers[self.SI4703_STATUSRSSI] & 0x0600) >> 9)  # // Mask in BLERA;
-
-        Ch = (self.si4703_registers[self.SI4703_RDSC] & 0xFF00) >> 8
-        Cl = (self.si4703_registers[self.SI4703_RDSC] & 0x00FF)
-
-        Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
-        Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
-
-        return blockErrors == 0 and \
-               self.isValidAsciiBasicCharacterSet(Dh) and \
-               self.isValidAsciiBasicCharacterSet(Dl) and \
-               self.isValidAsciiBasicCharacterSet(Ch) and \
-               self.isValidAsciiBasicCharacterSet(Cl)
-
-    def isValidStationNameData(self):
-        blockErrors = ((self.si4703_registers[self.SI4703_STATUSRSSI] & 0x0600) >> 9)  # Mask in BLERA;
-
-        Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
-        Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
-
-        return blockErrors == 0 and self.isValidAsciiBasicCharacterSet(Dh) and \
-               self.isValidAsciiBasicCharacterSet(Dl)
-
-    def isRadioTextData(self):
-        return (self.si4703_registers[self.SI4703_RDSB] >> 11) == 4 or \
-               (self.si4703_registers[self.SI4703_RDSB] >> 11) == 5
-
-    def isStationNameData(self):
-        return ((self.si4703_registers[self.SI4703_RDSB] >> 11) == 0) or \
-               ((self.si4703_registers[self.SI4703_RDSB] >> 11) == 1)
-
-    def setRadioTextData(self, pointerToRadioTextData):
-        # retrieve where this data sits in the RDS message
-        positionOfData = (self.si4703_registers[self.SI4703_RDSB] & 0x00FF & 0xf)
-
-        Ch = (self.si4703_registers[self.SI4703_RDSC] & 0xFF00) >> 8
-        Cl = (self.si4703_registers[self.SI4703_RDSC] & 0x00FF)
-
-        Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
-        Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
-
-        characterPosition = positionOfData * 4
-        pointerToRadioTextData[characterPosition] = Ch
-
-        characterPosition = positionOfData * 4 + 1
-        pointerToRadioTextData[characterPosition] = Cl
-
-        characterPosition = positionOfData * 4 + 2
-        pointerToRadioTextData[characterPosition] = Dh
-
-        characterPosition = positionOfData * 4 + 3
-        pointerToRadioTextData[characterPosition] = Dl
-
-    def setStationNameData(self, pointerToStationNameData):
-        # retrieve where this data sits in the RDS message
-        positionOfData = (self.si4703_registers[self.SI4703_RDSB] & 0x00FF & 0x3)
-
-        Dh = (self.si4703_registers[self.SI4703_RDSD] & 0xFF00) >> 8
-        Dl = (self.si4703_registers[self.SI4703_RDSD] & 0x00FF)
-
-        characterPosition = positionOfData * 2
-        pointerToStationNameData[characterPosition] = Dh
-
-        characterPosition = positionOfData * 2 + 1
-        pointerToStationNameData[characterPosition] = Dl
