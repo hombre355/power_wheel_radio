@@ -222,6 +222,7 @@ class si4703Radio():
             offset = 0
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
+
                 group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 12
                 version_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0800) >> 11
                 music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0008) >> 3
@@ -243,8 +244,8 @@ class si4703Radio():
                     if c1 == 1:
                         offset += 2
 
-                    #
                     if lock.acquire(blocking=False):
+                        print("saving station name")
                         self.si4703_rds_ps[(offset * 2)] = Dh
                         self.si4703_rds_ps[(offset * 2) + 1] = Dl
                         lock.release()
@@ -262,6 +263,7 @@ class si4703Radio():
                         offset += 8
 
                     if lock.acquire(blocking=False):
+                        print("saving song name")
                         self.si4703_rds_rt[(offset * 4) + 2] = Dh
                         self.si4703_rds_rt[(offset * 4) + 3] = Dl
 
