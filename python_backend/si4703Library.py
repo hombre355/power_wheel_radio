@@ -266,24 +266,22 @@ class si4703Radio():
 
                         lock.release()
 
-                # for x in self.si4703_rds_ps:
-                # need to create gobal varible to retrive from also thread safe
-                # station_name += chr(x)
-
-                # for y in self.si4703_rds_rt:
-                # need to create gobal varible to retrive from also thread safe
-                # song_name += chr(y)
-
                 time.sleep(.040)  # Wait for the RDS bit to clear
             else:
                 # From AN230, using the polling method 40ms should be sufficient amount of time between checks
                 time.sleep(.040)
 
     def si4703GetStationName(self):
-        return self.si4703_rds_ps
+        station_name = ""
+        for x in self.si4703_rds_ps:
+            station_name += chr(x)
+        return station_name
 
     def si4703GetSongName(self):
-        return self.si4703_rds_rt
+        song_name = ""
+        for y in self.si4703_rds_rt:
+            song_name += chr(y)
+        return song_name
 
     def si4703ClearRDSBuffers(self):
         self.si4703_rds_ps[:] = []
