@@ -62,6 +62,10 @@ def main():
     except KeyboardInterrupt:
         socket.send_string("Exiting program")
 
+    socket.send_string("killing rds getter thread")
+    kill_thread = True
+    thread.join()
+    socket.send_string("thread killed")
     socket.send_string("Shutting down radio")
     radio.si4703ShutDown()
     socket.send_string("Radio has been turned off")
