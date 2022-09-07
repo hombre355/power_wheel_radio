@@ -18,11 +18,10 @@ def main():
     radio.si4703SetChannel(1003)
     radio.si4703SetVolume(12)
     lock = Lock()
-    kill_thread = False
 
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
-    thread = Thread(target=radio.si4703StoreRDSData, args=(lambda: lock, kill_thread))
+    thread = Thread(target=radio.si4703StoreRDSData, args=(lock,))
     thread.start()
     print("ready for commands")
 
@@ -63,7 +62,8 @@ def main():
         socket.send_string("Exiting program")
 
     socket.send_string("killing rds getter thread")
-    kill_thread = True
+    with lock:
+        radio.KILL_THREAD = True
     thread.join()
     socket.send_string("thread killed")
     socket.send_string("Shutting down radio")

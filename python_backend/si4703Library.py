@@ -91,6 +91,8 @@ class si4703Radio():
     SI4703_SEEK_DOWN = 0
     SI4703_SEEK_UP = 1
 
+    KILL_THREAD = False
+
     # RBDS program type
     pty = ["unknown", "News", "Information", "Sports", "Talk", "Rock", "Classic Rock", "Adult Hits",
            "Soft Rock", "Top 40's", "Country", "Oldies", "Soft Music", "Nostalgia", "Jazz", "Classical",
@@ -211,8 +213,11 @@ class si4703Radio():
         self.si4703_registers[self.SI4703_POWERCFG] ^= (1 << self.SI4703_DMUTE)  # toggle mute bit
         self.si4703WriteRegisters()  # Update
 
-    def si4703StoreRDSData(self, lock, kill_thread):
-        while not kill_thread:
+    def si4703StoreRDSData(self, lock):
+        while True:
+            with lock:
+                if self.KILL_THREAD:
+                    break
             offset = 0
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
