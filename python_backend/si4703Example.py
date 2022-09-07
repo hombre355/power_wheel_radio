@@ -18,10 +18,11 @@ def main():
     radio.si4703SetChannel(1003)
     radio.si4703SetVolume(12)
     lock = Lock()
+    kill_thread = False
 
     print(str(radio.si4703GetChannel()))
     print(str(radio.si4703GetVolume()))
-    thread = Thread(target=radio.si4703StoreRDSData, args=(lock,))
+    thread = Thread(target=radio.si4703StoreRDSData, args=(lambda: lock, kill_thread))
     thread.start()
     print("ready for commands")
 

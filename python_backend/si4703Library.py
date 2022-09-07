@@ -211,8 +211,8 @@ class si4703Radio():
         self.si4703_registers[self.SI4703_POWERCFG] ^= (1 << self.SI4703_DMUTE)  # toggle mute bit
         self.si4703WriteRegisters()  # Update
 
-    def si4703StoreRDSData(self, lock):
-        while 1:
+    def si4703StoreRDSData(self, lock, kill_thread):
+        while not kill_thread:
             offset = 0
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
