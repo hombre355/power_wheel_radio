@@ -215,14 +215,17 @@ class si4703Radio():
 
     def si4703StoreRDSData(self, lock):
         while True:
+            print("1")
             with lock:
+                print("2")
                 if self.KILL_THREAD:
                     print("killing thread")
                     break
             offset = 0
+            print("3")
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
-
+                print("rds data")
                 group_type = (self.si4703_registers[self.SI4703_RDSB] & 0xF000) >> 12
                 version_code = (self.si4703_registers[self.SI4703_RDSB] & 0x0800) >> 11
                 music_speech = (self.si4703_registers[self.SI4703_RDSB] & 0x0008) >> 3
