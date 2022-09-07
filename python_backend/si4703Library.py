@@ -217,6 +217,7 @@ class si4703Radio():
         while True:
             with lock:
                 if self.KILL_THREAD:
+                    print("killing thread")
                     break
             offset = 0
             self.si4703ReadRegisters()
