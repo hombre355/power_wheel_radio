@@ -281,12 +281,14 @@ class si4703Radio():
         station_name = ""
         for x in self.si4703_rds_ps:
             station_name += chr(x)
+        print(station_name)
         return station_name
 
     def si4703GetSongName(self):
         song_name = ""
         for y in self.si4703_rds_rt:
             song_name += chr(y)
+        print(song_name)
         return song_name
 
     def si4703ClearRDSBuffers(self):

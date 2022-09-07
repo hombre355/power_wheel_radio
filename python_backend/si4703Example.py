@@ -49,9 +49,9 @@ def main():
             if message == "d":
                 with lock:
                     socket.send_string(str(radio.si4703GetStationName()))
-                    print(str(radio.si4703GetStationName()))
+                    #print(str(radio.si4703GetStationName()))
                     socket.send_string(str(radio.si4703GetSongName()))
-                    print(str(radio.si4703GetSongName()))
+                    #print(str(radio.si4703GetSongName()))
 
             if message == "t":
                 print("connected to Iphone")
