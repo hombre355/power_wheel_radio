@@ -6,10 +6,8 @@
 import smbus
 import time
 import RPi.GPIO as GPIO
-import array as buffer
 
-
-class si4703Radio():
+class si4703Radio:
     # Define the register names
     SI4703_DEVICEID = 0x00
     SI4703_CHIPID = 0x01
@@ -215,14 +213,11 @@ class si4703Radio():
 
     def si4703StoreRDSData(self, lock):
         while True:
-            #print("1")
             with lock:
-                #print("2")
                 if self.KILL_THREAD:
                     print("killing thread")
                     break
             offset = 0
-            #print("3")
             self.si4703ReadRegisters()
             if self.si4703_registers[self.SI4703_STATUSRSSI] & (1 << self.SI4703_RDSR):
                 print("rds data")
@@ -252,7 +247,6 @@ class si4703Radio():
                         self.si4703_rds_ps[(offset * 2)] = Dh
                         self.si4703_rds_ps[(offset * 2) + 1] = Dl
                         lock.release()
-
 
                 # 2B, getting Song name
                 elif group_type == 2:
