@@ -1,10 +1,8 @@
-#!/usr/bin/env python 2
 
-# example program for testing the si4703 library
+# Program for using the si4703 library
 from si4703Library import si4703Radio
 import zmq
 from threading import Thread, Lock
-import time
 
 
 def main():
@@ -49,9 +47,7 @@ def main():
             if message == "d":
                 with lock:
                     socket.send_string(str(radio.si4703GetStationName()))
-                    #print(str(radio.si4703GetStationName()))
                     socket.send_string(str(radio.si4703GetSongName()))
-                    #print(str(radio.si4703GetSongName()))
 
             if message == "t":
                 print("connected to Iphone")
